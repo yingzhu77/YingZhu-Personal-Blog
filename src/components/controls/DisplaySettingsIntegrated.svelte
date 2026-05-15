@@ -111,7 +111,8 @@ const isBannerTitleSwitchable =
 // 是否允许用户切换横幅轮播
 const isBannerCarouselSwitchable =
 	backgroundWallpaper.banner?.carousel?.switchable ?? false;
-	backgroundWallpaper.wallpaperHue?.switchable ?? false;
+	const isHueFollowSwitchable =
+		backgroundWallpaper.wallpaperHue?.switchable ?? false;
 // 是否有任何横幅设置可显示（后续添加新设置时在此处添加条件）
 const hasBannerSettings =
 	isWavesSwitchable ||
@@ -316,7 +317,7 @@ function toggleFollowImageHue() {
 	followImageHue = !followImageHue;
 	setFollowImageHue(followImageHue);
 }
-^Ifunction randomWallpaper() {
+	function randomWallpaper() {
 		window.dispatchEvent(new CustomEvent("randomWallpaper"));
 	}
 
