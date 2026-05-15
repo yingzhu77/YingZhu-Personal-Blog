@@ -111,6 +111,7 @@ const isBannerTitleSwitchable =
 // 是否允许用户切换横幅轮播
 const isBannerCarouselSwitchable =
 	backgroundWallpaper.banner?.carousel?.switchable ?? false;
+	// 是否允许用户切换色相跟随
 	const isHueFollowSwitchable =
 		backgroundWallpaper.wallpaperHue?.switchable ?? false;
 // 是否有任何横幅设置可显示（后续添加新设置时在此处添加条件）
@@ -455,7 +456,7 @@ onMount(() => {
 		const target = event.target;
 		if (target instanceof HTMLInputElement && target.type === "range") {
 			updateRangeProgress(target);
-		}
+	}
 	};
 
 	refreshAllRangeProgress();
@@ -508,13 +509,13 @@ $effect(() => {
 	if (wallpaperMode === WALLPAPER_OVERLAY) {
 		if (isOverlayOpacitySwitchable) {
 			setOverlayOpacity(overlayOpacity);
-		}
+	}
 		if (isOverlayBlurSwitchable) {
 			setOverlayBlur(overlayBlur);
-		}
+	}
 		if (isOverlayCardOpacitySwitchable) {
 			setOverlayCardOpacity(overlayCardOpacity);
-		}
+	}
 	}
 });
 </script>
@@ -674,12 +675,14 @@ $effect(() => {
                 >
                     <Icon icon="material-symbols:titlecase-rounded" class="text-[1.25rem] shrink-0"></Icon>
                     <span class="text-sm flex-1">{i18n(I18nKey.wallpaperTitle)}</span>
-                    <div class="w-10 h-5 rounded-full transition-all duration-200 relative"
+                    <div class="w-11 h-6 rounded-full transition-colors duration-300 relative border-2"
                          class:bg-(--primary)={bannerTitleEnabled}
-                         class:bg-(--btn-regular-bg-active)={!bannerTitleEnabled}>
-                        <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200"
-                             class:left-0.5={!bannerTitleEnabled}
-                             class:left-5={bannerTitleEnabled}></div>
+                         class:border-(--primary)={bannerTitleEnabled}
+                         class:bg-(--btn-regular-bg-active)={!bannerTitleEnabled}
+                         class:border-(--btn-regular-bg-active)={!bannerTitleEnabled}>
+                        <div class="absolute top-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300"
+                             class:left-[2px]={!bannerTitleEnabled}
+                             class:left-[18px]={bannerTitleEnabled}></div>
                     </div>
                 </button>
                 {/if}
@@ -692,12 +695,14 @@ $effect(() => {
                 >
                     <Icon icon="material-symbols:view-carousel-outline" class="text-[1.25rem] shrink-0"></Icon>
                     <span class="text-sm flex-1">{i18n(I18nKey.wallpaperCarousel)}</span>
-                    <div class="w-10 h-5 rounded-full transition-all duration-200 relative"
+                    <div class="w-11 h-6 rounded-full transition-colors duration-300 relative border-2"
                          class:bg-(--primary)={bannerCarouselEnabled}
-                         class:bg-(--btn-regular-bg-active)={!bannerCarouselEnabled}>
-                        <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200"
-                             class:left-0.5={!bannerCarouselEnabled}
-                             class:left-5={bannerCarouselEnabled}></div>
+                         class:border-(--primary)={bannerCarouselEnabled}
+                         class:bg-(--btn-regular-bg-active)={!bannerCarouselEnabled}
+                         class:border-(--btn-regular-bg-active)={!bannerCarouselEnabled}>
+                        <div class="absolute top-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300"
+                             class:left-[2px]={!bannerCarouselEnabled}
+                             class:left-[18px]={bannerCarouselEnabled}></div>
                     </div>
                 </button>
                 {/if}
@@ -710,16 +715,18 @@ $effect(() => {
                 >
                     <Icon icon="material-symbols:palette-outline" class="text-[1.25rem] shrink-0"></Icon>
                     <span class="text-sm flex-1">{i18n(I18nKey.wallpaperHueFollow)}</span>
-                    <div class="w-10 h-5 rounded-full transition-all duration-200 relative"
+                    <div class="w-11 h-6 rounded-full transition-colors duration-300 relative border-2"
                          class:bg-(--primary)={followImageHue}
-                         class:bg-(--btn-regular-bg-active)={!followImageHue}>
-                        <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200"
-                             class:left-0.5={!followImageHue}
-                             class:left-5={followImageHue}></div>
+                         class:border-(--primary)={followImageHue}
+                         class:bg-(--btn-regular-bg-active)={!followImageHue}
+                         class:border-(--btn-regular-bg-active)={!followImageHue}>
+                        <div class="absolute top-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300"
+                             class:left-[2px]={!followImageHue}
+                             class:left-[18px]={followImageHue}></div>
                     </div>
                 </button>
                 {/if}
-n                <!-- Random Wallpaper Button -->
+                <!-- Random Wallpaper Button -->
                 <button
                     class="w-full btn-regular rounded-md py-2 px-3 flex items-center gap-3 text-left active:scale-95 transition-all relative overflow-hidden"
                     onclick={randomWallpaper}
@@ -736,12 +743,14 @@ n                <!-- Random Wallpaper Button -->
                 >
                     <Icon icon="material-symbols:airwave-rounded" class="text-[1.25rem] shrink-0"></Icon>
                     <span class="text-sm flex-1">{i18n(I18nKey.wavesAnimation)}</span>
-                    <div class="w-10 h-5 rounded-full transition-all duration-200 relative"
+                    <div class="w-11 h-6 rounded-full transition-colors duration-300 relative border-2"
                          class:bg-(--primary)={wavesEnabled}
-                         class:bg-(--btn-regular-bg-active)={!wavesEnabled}>
-                        <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200"
-                             class:left-0.5={!wavesEnabled}
-                             class:left-5={wavesEnabled}></div>
+                         class:border-(--primary)={wavesEnabled}
+                         class:bg-(--btn-regular-bg-active)={!wavesEnabled}
+                         class:border-(--btn-regular-bg-active)={!wavesEnabled}>
+                        <div class="absolute top-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300"
+                             class:left-[2px]={!wavesEnabled}
+                             class:left-[18px]={wavesEnabled}></div>
                     </div>
                 </button>
                 {/if}
@@ -754,12 +763,14 @@ n                <!-- Random Wallpaper Button -->
                 >
                     <Icon icon="material-symbols:gradient" class="text-[1.25rem] shrink-0"></Icon>
                     <span class="text-sm flex-1">{i18n(I18nKey.gradientTransition)}</span>
-                    <div class="w-10 h-5 rounded-full transition-all duration-200 relative"
+                    <div class="w-11 h-6 rounded-full transition-colors duration-300 relative border-2"
                          class:bg-(--primary)={gradientEnabled}
-                         class:bg-(--btn-regular-bg-active)={!gradientEnabled}>
-                        <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200"
-                             class:left-0.5={!gradientEnabled}
-                             class:left-5={gradientEnabled}></div>
+                         class:border-(--primary)={gradientEnabled}
+                         class:bg-(--btn-regular-bg-active)={!gradientEnabled}
+                         class:border-(--btn-regular-bg-active)={!gradientEnabled}>
+                        <div class="absolute top-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300"
+                             class:left-[2px]={!gradientEnabled}
+                             class:left-[18px]={gradientEnabled}></div>
                     </div>
                 </button>
                 {/if}
