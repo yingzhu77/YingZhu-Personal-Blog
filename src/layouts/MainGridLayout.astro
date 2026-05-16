@@ -272,14 +272,28 @@ const wallpaperHueSwitchable = wallpaperHueConfig?.switchable ?? false;
 const fixedHue = wallpaperHueConfig?.fixedHue ?? 250;
 const imageHueMap = wallpaperHueConfig?.imageHueMap ?? {};
 // 提取图片名(不含路径和扩展名)用于色相映射查找
-const desktopImageNames = (Array.isArray(backgroundImages.desktop)
-	? backgroundImages.desktop
-	: [backgroundImages.desktop]
-).map((path) => path.replace(/\\/g, '/').split('/').pop().replace(/\.[^/.]+$/, ''));
-const mobileImageNames = (Array.isArray(backgroundImages.mobile)
-	? backgroundImages.mobile
-	: [backgroundImages.mobile]
-).map((path) => path.replace(/\\/g, '/').split('/').pop().replace(/\.[^/.]+$/, ''));
+const desktopImageNames = (
+	Array.isArray(backgroundImages.desktop)
+		? backgroundImages.desktop
+		: [backgroundImages.desktop]
+).map((path) =>
+	path
+		.replace(/\\/g, "/")
+		.split("/")
+		.pop()
+		.replace(/\.[^/.]+$/, ""),
+);
+const mobileImageNames = (
+	Array.isArray(backgroundImages.mobile)
+		? backgroundImages.mobile
+		: [backgroundImages.mobile]
+).map((path) =>
+	path
+		.replace(/\\/g, "/")
+		.split("/")
+		.pop()
+		.replace(/\.[^/.]+$/, ""),
+);
 ---
 
 <Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} postSlug={postSlug}>
@@ -492,6 +506,32 @@ const mobileImageNames = (Array.isArray(backgroundImages.mobile)
 
     <!-- 随机壁纸切换事件处理 -->
     <script is:inline data-swup-ignore-script>
+        // 获取 wallpaperPool 允许的索引列表（供轮播和随机切换共用）
+        window.__getPoolIndices = function(type) {
+            var container = document.getElementById('banner-images-container');
+            if (!container) return null;
+            try {
+                var stored = localStorage.getItem('wallpaperPool');
+                if (!stored) return null;
+                var pool = JSON.parse(stored);
+                if (!Array.isArray(pool) || pool.length === 0) return null;
+                var namesJson = type === 'desktop'
+                    ? container.dataset.desktopImageNames
+                    : container.dataset.mobileImageNames;
+                if (!namesJson) return null;
+                var names = JSON.parse(namesJson);
+                var indices = [];
+                for (var i = 0; i < names.length; i++) {
+                    if (pool.indexOf(names[i]) !== -1) {
+                        indices.push(i);
+                    }
+                }
+                return indices.length > 0 ? indices : null;
+            } catch (e) {
+                return null;
+            }
+        };
+
         window.addEventListener('randomWallpaper', function() {
             var container = document.getElementById('banner-images-container');
             if (!container) return;
@@ -499,13 +539,24 @@ const mobileImageNames = (Array.isArray(backgroundImages.mobile)
             var mobileCount = parseInt(container.dataset.mobileCount || '0', 10);
             var desktopCount = parseInt(container.dataset.desktopCount || '0', 10);
 
-            function pickNewIndex(current, total) {
+            function pickNewIndex(current, total, type) {
+                // 优先从 wallpaperPool 中选取
+                var poolIndices = window.__getPoolIndices(type);
+                if (poolIndices && poolIndices.length >= 1) {
+                    if (poolIndices.length === 1) return poolIndices[0];
+                    var idx;
+                    do {
+                        idx = poolIndices[Math.floor(Math.random() * poolIndices.length)];
+                    } while (idx === current && poolIndices.length > 1);
+                    return idx;
+                }
+                // 回退：全部图片随机
                 if (total <= 1) return current;
-                var idx;
+                var idx2;
                 do {
-                    idx = Math.floor(Math.random() * total);
-                } while (idx === current && total > 1);
-                return idx;
+                    idx2 = Math.floor(Math.random() * total);
+                } while (idx2 === current && total > 1);
+                return idx2;
             }
 
             function replaceSlot(slotClass, tplClass, newIndex) {
@@ -531,8 +582,8 @@ const mobileImageNames = (Array.isArray(backgroundImages.mobile)
                 window.__bannerRandomIndex = { mobile: 0, desktop: 0 };
             }
 
-            var newMobileIdx = pickNewIndex(window.__bannerRandomIndex.mobile, mobileCount);
-            var newDesktopIdx = pickNewIndex(window.__bannerRandomIndex.desktop, desktopCount);
+            var newMobileIdx = pickNewIndex(window.__bannerRandomIndex.mobile, mobileCount, 'mobile');
+            var newDesktopIdx = pickNewIndex(window.__bannerRandomIndex.desktop, desktopCount, 'desktop');
 
             window.__bannerRandomIndex.mobile = newMobileIdx;
             window.__bannerRandomIndex.desktop = newDesktopIdx;

@@ -6,7 +6,6 @@ import {
 	NavBarSearchMethod,
 } from "../types/config";
 import { siteConfig } from "./siteConfig";
-
 // 根据页面开关动态生成导航栏配置
 const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 基础导航栏链接
@@ -16,46 +15,44 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 
 		// 归档
 		LinkPreset.Archive,
+
+		// 分享（直接硬编码中文名，避免与 i18n/siteConfig 产生循环依赖）
+		{
+			name: "分享",
+			url: "/share/",
+			icon: "material-symbols:wallpaper",
+		},
+
+		// 项目
+		{
+			name: "项目",
+			url: "/projects/",
+			icon: "material-symbols:code-blocks",
+		},
+
+		// 友链
+		LinkPreset.Friends,
+
+		// 留言板
+		LinkPreset.Guestbook,
+
+		// 我的及其子菜单
+		{
+			name: "我的",
+			url: "/my/",
+			icon: "material-symbols:person",
+			children: [
+				// 根据配置决定是否添加相册
+				...(siteConfig.pages.gallery ? [LinkPreset.Gallery] : []),
+
+				// 根据配置决定是否添加番组计划
+				...(siteConfig.pages.bangumi ? [LinkPreset.Bangumi] : []),
+			],
+		},
+
+		// 关于（单链接，无下拉）
+		LinkPreset.About,
 	];
-
-	// 根据配置决定是否添加友链，在siteConfig关闭pages.friends时导航栏不显示友链
-	if (siteConfig.pages.friends) {
-		links.push(LinkPreset.Friends);
-	}
-
-	// 根据配置决定是否添加留言板，在siteConfig关闭pages.guestbook时导航栏不显示留言板
-	if (siteConfig.pages.guestbook) {
-		links.push(LinkPreset.Guestbook);
-	}
-
-	// 我的及其子菜单
-	links.push({
-		name: "我的",
-		url: "/my/",
-		icon: "material-symbols:person",
-		children: [
-			// 根据配置决定是否添加相册，在siteConfig关闭pages.gallery时导航栏不显示相册
-			...(siteConfig.pages.gallery ? [LinkPreset.Gallery] : []),
-
-			// 根据配置决定是否添加番组计划，在siteConfig关闭pages.bangumi时导航栏不显示番组计划
-			...(siteConfig.pages.bangumi ? [LinkPreset.Bangumi] : []),
-		],
-	});
-
-	// 关于及其子菜单
-	links.push({
-		name: "关于",
-		url: "/content/",
-		icon: "material-symbols:info",
-		children: [
-			// 根据配置决定是否添加赞助，在siteConfig关闭pages.sponsor时导航栏不显示赞助
-			...(siteConfig.pages.sponsor ? [LinkPreset.Sponsor] : []),
-
-			// 关于页面
-			LinkPreset.About,
-		],
-	});
-
 
 	// 仅返回链接，其它导航搜索相关配置在模块顶层常量中独立导出
 	return { links } as NavBarConfig;

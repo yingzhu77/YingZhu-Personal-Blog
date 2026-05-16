@@ -111,9 +111,9 @@ const isBannerTitleSwitchable =
 // 是否允许用户切换横幅轮播
 const isBannerCarouselSwitchable =
 	backgroundWallpaper.banner?.carousel?.switchable ?? false;
-	// 是否允许用户切换色相跟随
-	const isHueFollowSwitchable =
-		backgroundWallpaper.wallpaperHue?.switchable ?? false;
+// 是否允许用户切换色相跟随
+const isHueFollowSwitchable =
+	backgroundWallpaper.wallpaperHue?.switchable ?? false;
 // 是否有任何横幅设置可显示（后续添加新设置时在此处添加条件）
 const hasBannerSettings =
 	isWavesSwitchable ||
@@ -156,8 +156,7 @@ let bannerSettingsIsDefault = $derived(
 		(!isGradientSwitchable || gradientEnabled === defaultGradientEnabled) &&
 		(!isBannerCarouselSwitchable ||
 			bannerCarouselEnabled === defaultBannerCarouselEnabled) &&
-		(!isHueFollowSwitchable ||
-			followImageHue === defaultFollowImageHue),
+		(!isHueFollowSwitchable || followImageHue === defaultFollowImageHue),
 );
 const hasAnyContent =
 	showThemeColor ||
@@ -265,10 +264,7 @@ function resetBannerSettings() {
 		bannerCarouselEnabled = defaultBannerCarouselEnabled;
 		setBannerCarouselEnabled(defaultBannerCarouselEnabled);
 	}
-	if (
-		isHueFollowSwitchable &&
-		followImageHue !== defaultFollowImageHue
-	) {
+	if (isHueFollowSwitchable && followImageHue !== defaultFollowImageHue) {
 		followImageHue = defaultFollowImageHue;
 		setFollowImageHue(defaultFollowImageHue);
 	}
@@ -318,10 +314,9 @@ function toggleFollowImageHue() {
 	followImageHue = !followImageHue;
 	setFollowImageHue(followImageHue);
 }
-	function randomWallpaper() {
-		window.dispatchEvent(new CustomEvent("randomWallpaper"));
-	}
-
+function randomWallpaper() {
+	window.dispatchEvent(new CustomEvent("randomWallpaper"));
+}
 
 function switchWallpaperMode(newMode: WALLPAPER_MODE) {
 	wallpaperMode = newMode;
@@ -408,7 +403,6 @@ onMount(() => {
 	// 从localStorage读取横幅轮播状态
 	bannerCarouselEnabled = getStoredBannerCarouselEnabled();
 
-
 	// 从localStorage读取色相跟随状态
 	followImageHue = getStoredFollowImageHue();
 
@@ -456,7 +450,7 @@ onMount(() => {
 		const target = event.target;
 		if (target instanceof HTMLInputElement && target.type === "range") {
 			updateRangeProgress(target);
-	}
+		}
 	};
 
 	refreshAllRangeProgress();
@@ -492,10 +486,7 @@ onMount(() => {
 	window.addEventListener("wallpaperHueChange", handleHueFollowChange);
 
 	return () => {
-		window.removeEventListener(
-			"wallpaperHueChange",
-			handleHueFollowChange,
-		);
+		window.removeEventListener("wallpaperHueChange", handleHueFollowChange);
 	};
 });
 
@@ -509,13 +500,13 @@ $effect(() => {
 	if (wallpaperMode === WALLPAPER_OVERLAY) {
 		if (isOverlayOpacitySwitchable) {
 			setOverlayOpacity(overlayOpacity);
-	}
+		}
 		if (isOverlayBlurSwitchable) {
 			setOverlayBlur(overlayBlur);
-	}
+		}
 		if (isOverlayCardOpacitySwitchable) {
 			setOverlayCardOpacity(overlayCardOpacity);
-	}
+		}
 	}
 });
 </script>
@@ -680,9 +671,9 @@ $effect(() => {
                          class:border-(--primary)={bannerTitleEnabled}
                          class:bg-(--btn-regular-bg-active)={!bannerTitleEnabled}
                          class:border-(--btn-regular-bg-active)={!bannerTitleEnabled}>
-                        <div class="absolute top-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300"
-                             class:left-[2px]={!bannerTitleEnabled}
-                             class:left-[18px]={bannerTitleEnabled}></div>
+                        <div class="absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300"
+                             class:translate-x-0={!bannerTitleEnabled}
+                             class:translate-x-4={bannerTitleEnabled}></div>
                     </div>
                 </button>
                 {/if}
@@ -700,9 +691,9 @@ $effect(() => {
                          class:border-(--primary)={bannerCarouselEnabled}
                          class:bg-(--btn-regular-bg-active)={!bannerCarouselEnabled}
                          class:border-(--btn-regular-bg-active)={!bannerCarouselEnabled}>
-                        <div class="absolute top-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300"
-                             class:left-[2px]={!bannerCarouselEnabled}
-                             class:left-[18px]={bannerCarouselEnabled}></div>
+                        <div class="absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300"
+                             class:translate-x-0={!bannerCarouselEnabled}
+                             class:translate-x-4={bannerCarouselEnabled}></div>
                     </div>
                 </button>
                 {/if}
@@ -720,9 +711,9 @@ $effect(() => {
                          class:border-(--primary)={followImageHue}
                          class:bg-(--btn-regular-bg-active)={!followImageHue}
                          class:border-(--btn-regular-bg-active)={!followImageHue}>
-                        <div class="absolute top-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300"
-                             class:left-[2px]={!followImageHue}
-                             class:left-[18px]={followImageHue}></div>
+                        <div class="absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300"
+                             class:translate-x-0={!followImageHue}
+                             class:translate-x-4={followImageHue}></div>
                     </div>
                 </button>
                 {/if}
@@ -748,9 +739,9 @@ $effect(() => {
                          class:border-(--primary)={wavesEnabled}
                          class:bg-(--btn-regular-bg-active)={!wavesEnabled}
                          class:border-(--btn-regular-bg-active)={!wavesEnabled}>
-                        <div class="absolute top-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300"
-                             class:left-[2px]={!wavesEnabled}
-                             class:left-[18px]={wavesEnabled}></div>
+                        <div class="absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300"
+                             class:translate-x-0={!wavesEnabled}
+                             class:translate-x-4={wavesEnabled}></div>
                     </div>
                 </button>
                 {/if}
@@ -768,9 +759,9 @@ $effect(() => {
                          class:border-(--primary)={gradientEnabled}
                          class:bg-(--btn-regular-bg-active)={!gradientEnabled}
                          class:border-(--btn-regular-bg-active)={!gradientEnabled}>
-                        <div class="absolute top-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300"
-                             class:left-[2px]={!gradientEnabled}
-                             class:left-[18px]={gradientEnabled}></div>
+                        <div class="absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300"
+                             class:translate-x-0={!gradientEnabled}
+                             class:translate-x-4={gradientEnabled}></div>
                     </div>
                 </button>
                 {/if}

@@ -1,0 +1,129 @@
+---
+import { Icon } from "astro-icon/components";
+import { projects } from "@/config/projectsConfig";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+const title = i18n(I18nKey.projects);
+const description = "我参与和创建的开源项目";
+---
+
+<MainGridLayout title={title} description={description}>
+  <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
+    <div class="card-base z-10 px-6 py-6 md:px-9 w-full">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="h-8 w-8 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70">
+          <Icon name="material-symbols:code-blocks" class="text-[1.5rem]" />
+        </div>
+        <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+          {title}
+        </h2>
+      </div>
+
+      {
+        projects.length === 0 ? (
+          <div class="text-center py-16 text-neutral-500">
+            <Icon name="material-symbols:folder-open-outline" class="text-[3rem] mx-auto mb-4 block opacity-40" />
+            <p>暂无项目展示</p>
+          </div>
+        ) : (
+          <div class="bento-grid">
+            {projects.map((project, index) => (
+              <div
+                class:list={[
+                  "bento-card card-base group",
+                  index === 0 ? "bento-featured" : "",
+                ]}
+              >
+                <div class="p-5 h-full flex flex-col">
+                  <!-- 项目头部 -->
+                  <div class="flex items-start justify-between gap-3 mb-3">
+                    <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-(--primary) transition-colors leading-snug">
+                      {project.name}
+                    </h3>
+                    <a
+                      href={project.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="shrink-0 btn-plain scale-animation rounded-lg h-9 w-9 flex items-center justify-center text-neutral-400 hover:text-(--primary) transition-colors"
+                      aria-label={`View ${project.name} on GitHub`}
+                    >
+                      <Icon name="fa7-brands:github" class="text-[1.25rem]" />
+                    </a>
+                  </div>
+
+                  <!-- 描述 -->
+                  <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-4 flex-1">
+                    {project.description}
+                  </p>
+
+                  <!-- 元信息 -->
+                  <div class="flex flex-wrap items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400 mb-3">
+                    {project.language && (
+                      <span class="flex items-center gap-1">
+                        <span class="w-2.5 h-2.5 rounded-full bg-(--primary) inline-block"></span>
+                        {project.language}
+                      </span>
+                    )}
+                    {project.stars !== undefined && (
+                      <span class="flex items-center gap-1">
+                        <Icon name="material-symbols:star-outline" class="text-[0.9rem]" />
+                        {project.stars}
+                      </span>
+                    )}
+                  </div>
+
+                  <!-- 技术标签 -->
+                  <div class="flex flex-wrap gap-1.5">
+                    {project.tags.map((tag) => (
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-(--primary)/10 text-(--primary) border border-(--primary)/20">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</MainGridLayout>
+
+<style is:global>
+  .bento-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .bento-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .bento-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .bento-featured {
+      grid-column: span 2;
+      grid-row: span 1;
+    }
+  }
+
+  .bento-card {
+    border: 1px solid var(--line-divider, transparent);
+    border-radius: var(--radius-large, 1rem);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+    overflow: hidden;
+  }
+
+  .bento-card:hover {
+    border-color: oklch(from var(--primary) l c h / 0.3);
+    transform: translateY(-1px);
+  }
+</style>

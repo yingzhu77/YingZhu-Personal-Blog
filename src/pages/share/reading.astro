@@ -1,0 +1,42 @@
+---
+import { books } from "@/config/readingConfig";
+import ReadingGallery from "@/components/pages/share/ReadingGallery.svelte";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+const title = "阅读分享";
+const description = "读过的书，留下的痕迹";
+---
+
+<MainGridLayout title={title} description={description}>
+  <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
+    <div class="card-base z-10 px-6 py-6 md:px-9 w-full">
+      <div class="flex items-center justify-between gap-3 mb-2">
+        <div class="flex items-center gap-3">
+          <div class="h-8 w-8 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70">
+            <span class="text-[1.25rem] leading-none select-none">📚</span>
+          </div>
+          <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+            阅读分享
+          </h2>
+        </div>
+        <a href="/share/" class="btn-plain scale-animation rounded-lg px-3 py-2 text-sm text-(--primary) hover:bg-(--btn-regular-bg) transition-colors flex items-center gap-1">
+          <span>← 分享</span>
+        </a>
+      </div>
+      <p class="text-sm text-neutral-500 dark:text-neutral-400 mb-2">
+        一本书就是一个世界。
+      </p>
+      <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-6">
+        光标悬停查看评价片段，点击卡片阅读完整记录。
+      </p>
+
+      {books.length === 0 ? (
+        <div class="text-center py-16 text-neutral-400">
+          <p>暂无书单，编辑 <code class="text-xs bg-(--btn-regular-bg) px-1.5 py-0.5 rounded">src/config/readingConfig.ts</code> 添加</p>
+        </div>
+      ) : (
+        <ReadingGallery books={books} client:visible />
+      )}
+    </div>
+  </div>
+</MainGridLayout>

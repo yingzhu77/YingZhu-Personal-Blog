@@ -7,24 +7,25 @@ const SITE_LANG = "zh_CN";
 
 export const siteConfig: SiteConfig = {
 	// 站点标题
-	title: "Firefly",
+	title: "yingzhu77",
 
 	// 站点副标题
-	subtitle: "Demo site",
+	subtitle: "ai-coding, 游戏，音乐与书",
 
-	// 站点 URL
-	site_url: "https://firefly.cuteleaf.cn",
+	// 站点 URL（上线前替换为实际域名）
+	site_url: "https://yingzhu77.example.com",
 
 	// 站点描述
 	description:
-		"Firefly 是一款基于 Astro 框架和 Fuwari 模板开发的清新美观且现代化个人博客主题模板，专为技术爱好者和内容创作者设计。该主题融合了现代 Web 技术栈，提供了丰富的功能模块和高度可定制的界面，让您能够轻松打造出专业且美观的个人博客网站。",
+		"Ying Zhu 的个人博客，记录 AI 编程、游戏、音乐与阅读的思考与实践。",
 
 	// 站点关键词
 	keywords: [
-		"Firefly",
-		"Fuwari",
-		"Astro",
-		"ACGN",
+		"Ying Zhu",
+		"萤烛",
+		"AI",
+		"编程",
+		"LangGraph",
 		"博客",
 		"技术博客",
 		"静态博客",
@@ -57,7 +58,7 @@ export const siteConfig: SiteConfig = {
 	favicon: [
 		{
 			// 图标文件路径
-			src: "/favicon/favicon.ico",
+			src: "assets/images/logo.webp",
 			// 可选，指定主题 'light' | 'dark'
 			// theme: "light",
 			// 可选，图标大小
@@ -75,11 +76,11 @@ export const siteConfig: SiteConfig = {
 		// 4. 网络图片: { type: "url", value: "https://example.com/logo.png", alt: "Logo" }
 		logo: {
 			type: "image",
-			value: "assets/images/firefly.png",
-			alt: "🍀",
+			value: "assets/images/logo.webp",
+			alt: "yingzhu77",
 		},
 		// 导航栏标题
-		title: "Firefly",
+		title: "yingzhu77",
 		// 全宽导航栏，导航栏是否占满屏幕宽度
 		widthFull: false,
 		// 导航菜单对齐方式，left：左对齐，center：居中

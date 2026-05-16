@@ -21,41 +21,41 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	 *
 	 * 如果只使用一张图片或者使用随机图API，推荐直接使用字符串格式：
 	 * desktop: "https://t.alcy.cc/pc",   // 随机图API
-	 * desktop: "assets/images/DesktopWallpaper/d1.avif", // 单张图片
+	 * desktop: "assets/images/wallpapers/d1.avif", // 单张图片
 	 *
 	 * mobile: "https://t.alcy.cc/mp", // 随机图API
-	 * mobile: "assets/images/MobileWallpaper/m1.avif", // 单张图片
+	 * mobile: "assets/images/wallpapers/m1.avif", // 单张图片
 	 *
 	 * 支持配置多张图片（数组），每次刷新页面随机显示一张：
 	 * desktop: [
-	 * "assets/images/DesktopWallpaper/d1.avif",
-	 * "assets/images/DesktopWallpaper/d2.avif",
+	 * "assets/images/wallpapers/d1.avif",
+	 * "assets/images/wallpapers/d2.avif",
 	 * ],
 	 *
 	 * mobile:[
-	 *   "assets/images/MobileWallpaper/m1.avif",
-	 *   "assets/images/MobileWallpaper/m2.avif",
+	 *   "assets/images/wallpapers/m1.avif",
+	 *   "assets/images/wallpapers/m2.avif",
 	 * ],
 	 */
 	src: {
 		// 桌面背景图片（支持单张或多张随机）
-		// desktop: "assets/images/DesktopWallpaper/d1.avif",
+		// desktop: "assets/images/wallpapers/d1.avif",
 		desktop: [
-			"assets/images/DesktopWallpaper/night-purple.avif",
-			"assets/images/DesktopWallpaper/sky-marine.avif",
-			"assets/images/DesktopWallpaper/lavender-warm.avif",
-			"assets/images/DesktopWallpaper/ocean-deep.avif",
-			"assets/images/DesktopWallpaper/blue-mid.avif",
-			"assets/images/DesktopWallpaper/cyan-bright.avif",
+			"assets/images/wallpapers/night-purple.avif",
+			"assets/images/wallpapers/sky-marine.avif",
+			"assets/images/wallpapers/lavender-warm.avif",
+			"assets/images/wallpapers/ocean-deep.avif",
+			"assets/images/wallpapers/blue-mid.avif",
+			"assets/images/wallpapers/cyan-bright.avif",
 		],
 		// 移动背景图片（支持单张或多张随机）
 		mobile: [
-			"assets/images/MobileWallpaper/night-purple.avif",
-			"assets/images/MobileWallpaper/sky-marine.avif",
-			"assets/images/MobileWallpaper/lavender-warm.avif",
-			"assets/images/MobileWallpaper/ocean-deep.avif",
-			"assets/images/MobileWallpaper/blue-mid.avif",
-			"assets/images/MobileWallpaper/cyan-bright.avif",
+			"assets/images/wallpapers/night-purple.avif",
+			"assets/images/wallpapers/sky-marine.avif",
+			"assets/images/wallpapers/lavender-warm.avif",
+			"assets/images/wallpapers/ocean-deep.avif",
+			"assets/images/wallpapers/blue-mid.avif",
+			"assets/images/wallpapers/cyan-bright.avif",
 		],
 	},
 	// 横幅壁纸和全屏壁纸共享配置

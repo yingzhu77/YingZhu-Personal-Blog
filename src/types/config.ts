@@ -448,7 +448,6 @@ export type SidebarLayoutConfig = {
 	mobileBottomComponents: MobileBottomComponentConfig[]; // 移动端底部组件配置列表（<768px显示）
 };
 
-
 // Spine 看板娘配置
 export type SpineModelConfig = {
 	enable: boolean; // 是否启用 Spine 看板娘

@@ -1,7 +1,7 @@
 # 个人博客重构计划
 
 > 基于 Firefly (Fuwari) 主题的二次开发 | Astro 6 + Svelte 5 + Tailwind CSS v4 + OKLCH 色彩系统
-> 最后更新: 2026-05-15
+> 最后更新: 2026-05-16
 
 ---
 
@@ -60,7 +60,7 @@
 
 ## 三、模块规划
 
-### 已完成
+### 已完成: 品牌基础 (Phase 1)
 
 - [x] **动态色相系统** — 壁纸切换时主色调跟随变化
   - 6 组壁纸 (night-purple, sky-marine, lavender-warm, ocean-deep, blue-mid, cyan-bright)
@@ -73,47 +73,65 @@
 - [x] **随机切换壁纸按钮** — 在控制面板中原樱花特效位置替换为随机切换壁纸按钮
 - [x] **链接模块删除** — 删除导航栏"链接"下拉菜单 (GitHub/Gitee/QQ)
 
-### 待完成: 内容替换 (优先级: 高)
+### 已完成: 约束合规修复
 
-- [ ] **siteConfig.ts** — 替换站点标题/副标题/描述/URL/关键词
-- [ ] **profileConfig.ts** — 替换头像/昵称/简介/社交链接
-- [ ] **navbar 配置** — Logo、标题、导航菜单
-- [ ] **footerConfig.ts** — 页脚版权/链接信息
-- [ ] **about page** — 关于页面内容
-- [ ] **friends page** — 友链页面
-- [ ] **sponsor page** — 赞助页面
-- [ ] **guestbook** — 留言板 (需配置评论系统)
+- [x] **开关组件动画优化** — 5 个 toggle switch 从 `transition-all` + `left` 动画改为 `transition-colors` / `transition-transform` + `translate-x`，符合"动画只能使用 transform 和 opacity 为主"的约束
+- [x] **缩进修复** — 修复 DisplaySettingsIntegrated.svelte 中 `isHueFollowSwitchable`、`randomWallpaper()`、`$effect` 块、`handleRangeInput` 共 4 处缩进错误
 
-### 待完成: 新功能模块 (优先级: 高)
+### 已完成: 内容替换 (Phase 2)
 
-- [ ] **开源项目展示模块**
-  - 设计: Bento Grid 卡片布局 (2025 趋势)
-  - 功能: 展示 GitHub 项目，含 star 数、语言、简介
-  - 实现: 新建 `src/pages/projects/` 路由 + 数据配置
-  - 可选: 编译时从 GitHub API 拉取 pin 项目数据
+- [x] **siteConfig.ts** — 标题 `yingzhu77`、副标题 `ai-coding, 游戏，音乐与书`、描述、关键词；site_url 暂用占位符 `https://yingzhu77.example.com`（域名未定）
+- [x] **profileConfig.ts** — 头像 `assets/images/avatar.jpg`、昵称 `Ying Zhu`、签名 `萤烛 · ai-coding, 游戏，音乐与书`；社交链接保留 GitHub (`yingzhu77`) + RSS，已移除原 Firefly 作者 QQ/Email
+- [x] **navbar 配置** — Logo 替换为 `assets/images/logo.webp`，alt `yingzhu77`；导航栏标题 `yingzhu77`
+- [x] **footerConfig.ts** — 启用方案 A：`© 2026 Ying Zhu`；备案号注释已预留，后续备案可切换方案 C
+- [x] **about page** (`src/content/spec/about.md`) — 作者 `萤烛 (Ying Zhu)`，简介 `AI 时代浮沉的旧人`；保留一行 Firefly + Fuwari 开源鸣谢
+- [x] **sponsor page** — 清空赞助方式和赞助者列表，关闭赞助显示
+- [x] **友链站点信息** — `friends.mdx` 中本站信息已更新（名称/描述/URL/头像）；友链列表本身暂不动
+- [x] **demo 文章删除与替换** — 删除全部 12 篇 demo 文章及附带图片；新增 4 篇 LangGraph 技术文章：
+  - `langgraph-core-concepts` — 底层原理：State / Nodes / Edges（**Elysia♪** 风格）
+  - `langgraph-graph-grammar` — 图语法深度：StateGraph / 条件边 / Command / Send（**Bronya** 风格）
+  - `langgraph-vs-langchain` — LangGraph 与 LangChain 关系与区别（**闭嘴** 风格）
+  - `langgraph-hands-on` — 实战入门：含工具调用 + 持久化 + 人在回路（**Silver Wolf** 风格）
+
+### 待完成: 内容替换 (剩余)
+
+- [ ] **横幅文字** — `backgroundWallpaper.ts` 中 `homeText.title` 仍为 `"Lovely firefly!"`，副标题为英文诗句（用户要求暂时不改）
+- [ ] **友链列表** — `friendsConfig.ts` 中仍为 demo 友链（用户要求暂时不动）
+- [ ] **留言板** — `guestbook.md` 内容已通用，但需配置评论系统 (`commentConfig.ts`) 后才能正常使用
+- [ ] **域名** — `siteConfig.site_url` 仍为占位符，上线前需替换为真实域名
+
+### 待完成: 新功能模块 (Phase 3)
+
+- [x] **开源项目展示模块** (`/projects/`)
+  - 设计: Bento Grid 卡片布局
+  - 功能: 展示 GitHub 项目，含语言、简介、技术栈标签
+  - 实现: 新建 `src/pages/projects/` 路由 + `src/config/projectsConfig.ts`
+  - 首个项目: mINDCare Studio (Vue3 + NestJS AI 心理健康平台)
 - [ ] **兴趣分享模块**
   - 设计: 标签分类 + 卡片/列表混合布局
-  - 内容: 技术栈/书籍/工具/网站推荐
+  - 内容: 技术栈 / 书籍 / 工具 / 网站推荐
   - 实现: MDX 集合 + 自定义列表页
-- [ ] **博客文章模块** (替换 demo 内容)
-  - 写个人技术文章
-  - 删除 demo 文章 (markdown-style-guide, draft 等)
-- [ ] **分享模块** (壁纸预览与切换) `[Phase 3 新增]`
-  - 位置: 导航栏"我的"与"留言板"之间，不改变原有排版
-  - 功能: 预览所有背景壁纸缩略图，点击放大预览
-  - 交互: 选择壁纸切换为当前背景 / 下载壁纸原图
-  - 实现: 新建 `src/pages/share/` 路由，读取 backgroundWallpaper 配置中的图片列表
+- [x] **分享/美图分享模块** (壁纸预览与切换)
+  - 位置: 导航栏"归档"与"友链"之间
+  - 功能: 预览所有背景壁纸缩略图，点击放大 / 自选轮换池（最少 1 张）
+  - 实现: 新建 `src/pages/share/` 路由 + `src/components/pages/share/WallpaperGallery.svelte`
+  - localStorage `wallpaperPool` 持久化，随机切换逻辑已适配
   - 依赖: 现有壁纸系统和色相跟随机制
+- [x] **导航栏重构**
+  - 新增"分享"、"项目"导航项
+  - "关于"合并赞助为单链接（无下拉菜单）
+  - `about.md` 新增赞助支持内容
+  - 新顺序: 主页 / 归档 / 分享 / 项目 / 友链 / 留言 / 我的 / 关于
 
-### 保持的现有功能 (优先级: 低)
+### 保持的现有功能 (Phase 4 配置)
 
 - [x] 音乐播放器 (Meting API)
 - [x] Bangumi 追番 (编译时获取)
 - [x] 相册 (Gallery)
-- [x] 友链 (Friends)
-- [x] Live2D/Spine 看板娘
-- [x] 随机切换壁纸 (替代原有樱花特效位置)
-- [x] 评论系统 (Waline/Giscus/Artalk/Twikoo 多选一)
+- [x] 友链页面框架 (Friends)
+- [x] Live2D / Spine 看板娘
+- [x] 随机切换壁纸
+- [ ] 评论系统 (Waline / Giscus / Artalk / Twikoo 多选一，未配置)
 - [x] 搜索 (Pagefind)
 
 ---
@@ -123,29 +141,31 @@
 ### siteConfig.ts (核心配置)
 
 ```
-title: "Firefly"          → 改为个人博客名
-subtitle: "Demo site"     → 改为个人签名
-site_url: "..."           → 改为个人域名
-description: "..."        → 改为个人描述
-keywords: [...]           → 改为个人关键词
-hue: 250                  → 已完成
+title: "Firefly"          → "yingzhu77" ✓
+subtitle: "Demo site"     → "ai-coding, 游戏，音乐与书" ✓
+site_url: "..."           → 占位符，待域名确定后替换
+description: "..."        → 个人描述 ✓
+keywords: [...]           → 个人关键词 ✓
+hue: 250                  → 已完成 ✓
 ```
 
 ### profileConfig.ts (个人资料)
 
 ```
-avatar: 替换为个人头像
-name: "Firefly"           → 改为个人昵称
-bio: "..."                → 改为个人简介
-socialLinks: [...]        → 替换为个人社交链接
+avatar: 旧 GIF            → assets/images/avatar.jpg ✓
+name: "Firefly"           → "Ying Zhu" ✓
+bio: "..."                → "萤烛 · ai-coding, 游戏，音乐与书" ✓
+socialLinks: [...]        → GitHub (yingzhu77) + RSS ✓
 ```
 
 ### backgroundWallpaper.ts
 
 ```
 已完成:
-- desktop/mobile 图片数组替换为新壁纸
-- wallpaperHue 配置 (followImage, fixedHue, imageHueMap)
+- desktop/mobile 图片数组替换为新壁纸 ✓
+- wallpaperHue 配置 (followImage, fixedHue, imageHueMap) ✓
+待完成:
+- homeText.title / subtitle 仍为原文（暂时不改）
 ```
 
 ---
@@ -169,29 +189,35 @@ socialLinks: [...]        → 替换为个人社交链接
 ```
 src/
 ├── config/           # 所有配置文件
-│   ├── siteConfig.ts         # 站点核心配置 ← 待修改
-│   ├── profileConfig.ts      # 个人资料 ← 待修改
-│   ├── backgroundWallpaper.ts # 壁纸配置 ← 已完成
-│   ├── navBarConfig.ts       # 导航栏配置
-│   ├── footerConfig.ts       # 页脚配置 ← 待修改
+│   ├── siteConfig.ts         # 站点核心配置 ← 已完成
+│   ├── profileConfig.ts      # 个人资料 ← 已完成
+│   ├── backgroundWallpaper.ts # 壁纸配置 ← 已完成 (横幅文字待改)
+│   ├── navBarConfig.ts       # 导航栏配置 ← 已完成
+│   ├── footerConfig.ts       # 页脚配置 ← 已完成
 │   ├── musicConfig.ts        # 音乐播放器
 │   ├── galleryConfig.ts      # 相册
-│   ├── friendsConfig.ts      # 友链 ← 待修改
-│   ├── sponsorConfig.ts      # 赞助
-│   ├── commentConfig.ts      # 评论系统
+│   ├── friendsConfig.ts      # 友链 ← 友链列表待替换
+│   ├── sponsorConfig.ts      # 赞助 ← 已清空
+│   ├── commentConfig.ts      # 评论系统 ← 待配置
 │   └── sidebarConfig.ts      # 侧边栏布局
 ├── content/          # 文章内容 (MDX)
-│   └── posts/               # 博客文章 ← 待替换
+│   ├── posts/               # 博客文章 ← 4篇 LangGraph 文章已完成
+│   └── spec/                # 特殊页面内容
+│       ├── about.md         # 关于页面 ← 已完成
+│       ├── friends.mdx      # 友链页面 ← 站点信息已完成，列表待替换
+│       └── guestbook.md     # 留言板 ← 内容通用，待配评论系统
 ├── layouts/          # 布局组件
 │   ├── Layout.astro          # 根布局
-│   └── MainGridLayout.astro  # 主网格布局 ← 已修改(色相系统)
+│   └── MainGridLayout.astro  # 主网格布局 ← 已修改 (色相系统)
 ├── components/       # UI 组件
+│   └── controls/
+│       └── DisplaySettingsIntegrated.svelte ← 已修改 (动画修复+缩进修复)
 ├── styles/           # 样式
 │   ├── variables.styl        # CSS 变量体系 (322行)
 │   └── main.css              # Tailwind + 组件样式
 ├── i18n/             # 国际化
 ├── utils/            # 工具函数
-│   └── setting-utils.ts      # ← 已修改(FollowImageHue)
+│   └── setting-utils.ts      # ← 已修改 (FollowImageHue)
 └── pages/            # 路由页面
 ```
 
@@ -200,20 +226,24 @@ src/
 ## 七、执行顺序建议
 
 ```
-Phase 1: 品牌基础 (已完成)
+Phase 1: 品牌基础 (已完成 ✓)
   ├── 壁纸图片替换
   ├── 默认色相设定
   ├── 动态色相系统
   ├── 樱花特效移除 + 随机壁纸按钮
   └── 链接模块删除
 
-Phase 2: 内容替换 (当前)
-  ├── siteConfig / profileConfig 个人化
-  ├── 页脚 / 友链 / 赞助 内容替换
-  ├── 删除 demo 文章，写个人文章
-  └── 关于页面
+Phase 2: 内容替换 (基本完成，剩余 4 项可后续处理)
+  ├── ✅ siteConfig / profileConfig 个人化
+  ├── ✅ 页脚 / 赞助 内容替换
+  ├── ✅ 删除 demo 文章，写 4 篇 LangGraph 文章
+  ├── ✅ 关于页面
+  ├── ⬜ 横幅文字 (暂时不改)
+  ├── ⬜ 友链列表 (暂时不动)
+  ├── ⬜ 留言板评论系统 (待配置)
+  └── ⬜ 域名 (待确定)
 
-Phase 3: 新模块开发
+Phase 3: 新模块开发 (下一步)
   ├── 开源项目展示 (Bento Grid)
   ├── 兴趣分享模块
   └── 分享模块 (壁纸预览/切换/下载)

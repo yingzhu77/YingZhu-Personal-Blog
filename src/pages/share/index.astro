@@ -1,0 +1,174 @@
+---
+import { getImage } from "astro:assets";
+import { backgroundWallpaper } from "@/config";
+import { books } from "@/config/readingConfig";
+import { musicPlayerConfig } from "@/config/musicConfig";
+import WallpaperGallery from "@/components/pages/share/WallpaperGallery.svelte";
+import ReadingGallery from "@/components/pages/share/ReadingGallery.svelte";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+const title = i18n(I18nKey.share);
+const description = "美图、阅读、音乐 —— 分享我所爱";
+
+// --- 壁纸数据 ---
+const rawSrc = backgroundWallpaper.src;
+let desktopImages: string[] = [];
+let mobileImages: string[] = [];
+
+if (typeof rawSrc === "string") {
+  desktopImages = [rawSrc]; mobileImages = [rawSrc];
+} else if (Array.isArray(rawSrc)) {
+  desktopImages = rawSrc; mobileImages = rawSrc;
+} else {
+  const d = rawSrc.desktop; const m = rawSrc.mobile;
+  desktopImages = Array.isArray(d) ? d : d ? [d] : [];
+  mobileImages = Array.isArray(m) ? m : m ? [m] : [];
+}
+
+const imageModules = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/wallpapers/*.{avif,webp,jpg,jpeg,png}",
+);
+
+interface WallpaperData {
+  name: string; hue: number; desktopPath: string; mobilePath: string;
+  thumbnailUrl: string; fullUrl: string; artist?: string;
+}
+
+const wallpaperItems: WallpaperData[] = [];
+for (let i = 0; i < desktopImages.length; i++) {
+  const imgPath = desktopImages[i];
+  const fileName = imgPath.split("/").pop()?.replace(/\.[^/.]+$/, "") ?? `wp-${i}`;
+  const hueMap = backgroundWallpaper.wallpaperHue?.imageHueMap ?? {};
+  const globKey = Object.keys(imageModules).find((key) => key.includes(fileName));
+  let thumbnailUrl = "", fullUrl = "";
+  if (globKey) {
+    const mod = await imageModules[globKey]();
+    const img = mod.default;
+    thumbnailUrl = (await getImage({ src: img, width: 320, format: "webp", quality: 75 })).src;
+    fullUrl = (await getImage({ src: img, width: 1920, format: "webp", quality: 85 })).src;
+  }
+  wallpaperItems.push({ name: fileName, hue: hueMap[fileName] ?? 250, desktopPath: desktopImages[i], mobilePath: mobileImages[i] ?? "", thumbnailUrl, fullUrl });
+}
+
+// --- 音乐数据 ---
+const isLocal = musicPlayerConfig.mode === "local";
+const meting = musicPlayerConfig.meting;
+const localPlaylist = musicPlayerConfig.local?.playlist ?? [];
+const musicCount = isLocal ? localPlaylist.length : 0;
+---
+
+<MainGridLayout title={title} description={description}>
+  <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
+    <div class="card-base z-10 px-6 py-6 md:px-9 w-full">
+
+      <!-- ===== 1. 美图分享 ===== -->
+      <section class="share-section">
+        <div class="flex items-center justify-between gap-3 mb-2">
+          <div class="flex items-center gap-3">
+            <div class="h-8 w-8 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70">
+              <span class="text-[1.25rem] select-none">🖼</span>
+            </div>
+            <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100">美图分享</h2>
+          </div>
+          <a href="/share/all/" class="btn-plain scale-animation rounded-lg px-3 py-2 text-sm text-(--primary) hover:bg-(--btn-regular-bg) transition-colors flex items-center gap-1">
+            <span>全部</span><span class="text-xs opacity-60">→</span>
+          </a>
+        </div>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400 mb-1">一张好图总让人心情舒畅。</p>
+        <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-5">勾选喜欢的壁纸加入随机轮换池（上限 6 张），点击缩略图可放大预览。</p>
+        <WallpaperGallery wallpapers={wallpaperItems} client:visible />
+      </section>
+
+      <!-- ===== 2. 阅读分享 ===== -->
+      <section class="share-section">
+        <div class="flex items-center justify-between gap-3 mb-2">
+          <div class="flex items-center gap-3">
+            <div class="h-8 w-8 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70">
+              <span class="text-[1.25rem] select-none">📚</span>
+            </div>
+            <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100">阅读分享</h2>
+          </div>
+          <a href="/share/reading/" class="btn-plain scale-animation rounded-lg px-3 py-2 text-sm text-(--primary) hover:bg-(--btn-regular-bg) transition-colors flex items-center gap-1">
+            <span>全部</span><span class="text-xs opacity-60">→</span>
+          </a>
+        </div>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400 mb-1">一本书就是一个世界。</p>
+        <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-5">光标悬停查看评价片段，点击卡片阅读完整记录。</p>
+        {books.length > 0 ? (
+          <ReadingGallery books={books} client:visible />
+        ) : (
+          <div class="text-center py-12 text-neutral-400">
+            <p class="text-sm">暂无书单</p>
+            <p class="text-xs mt-1">编辑 <code class="text-xs bg-(--btn-regular-bg) px-1.5 py-0.5 rounded">src/config/readingConfig.ts</code> 添加</p>
+          </div>
+        )}
+      </section>
+
+      <!-- ===== 3. 音乐分享 ===== -->
+      <section class="share-section">
+        <div class="flex items-center justify-between gap-3 mb-2">
+          <div class="flex items-center gap-3">
+            <div class="h-8 w-8 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70">
+              <span class="text-[1.25rem] select-none">🎵</span>
+            </div>
+            <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100">音乐分享</h2>
+          </div>
+          <a href="/share/music/" class="btn-plain scale-animation rounded-lg px-3 py-2 text-sm text-(--primary) hover:bg-(--btn-regular-bg) transition-colors flex items-center gap-1">
+            <span>全部</span><span class="text-xs opacity-60">→</span>
+          </a>
+        </div>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400 mb-1">戴上耳机，进入另一个世界。</p>
+        <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-5">
+          {isLocal ? `本地音乐 · ${musicCount} 首` : `网易云歌单 · ID ${meting?.id}`} — 侧边栏播放器可控播放
+        </p>
+        {isLocal && localPlaylist.length > 0 ? (
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {localPlaylist.map((song) => (
+              <div class="music-card">
+                {song.cover ? (
+                  <img src={song.cover} alt={song.name} class="music-cover" loading="lazy" />
+                ) : (
+                  <div class="music-cover-placeholder"><span class="text-2xl opacity-30 select-none">♪</span></div>
+                )}
+                <div class="music-info">
+                  <span class="music-name">{song.name}</span>
+                  <span class="music-artist">{song.artist}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div class="text-center py-10 text-neutral-400">
+            <p class="text-sm">{isLocal ? "暂无本地歌曲" : "在线歌单播放中"}</p>
+            <p class="text-xs mt-1">侧边栏音乐播放器查看完整列表</p>
+          </div>
+        )}
+      </section>
+
+    </div>
+  </div>
+</MainGridLayout>
+
+<style is:global>
+  .share-section {
+    padding-top: 2rem; padding-bottom: 0.5rem;
+  }
+  .share-section + .share-section {
+    border-top: 1px solid var(--line-divider, transparent);
+    margin-top: 1.5rem;
+  }
+  .music-card {
+    border-radius: var(--radius-large, 0.75rem); overflow: hidden;
+    background: var(--card-bg, #fff); border: 1px solid var(--line-divider, transparent);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .music-card:hover { border-color: oklch(from var(--primary) l c h / 0.25); transform: translateY(-1px); }
+  .music-cover { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+  .music-cover-placeholder { width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: var(--btn-regular-bg, #f0f0f0); color: var(--btn-content, #999); }
+  .music-info { padding: 0.5rem 0.625rem; }
+  .music-name { display: block; font-size: 0.75rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text, #333); }
+  :global(.dark) .music-name { color: #e0e0e0; }
+  .music-artist { display: block; font-size: 0.625rem; color: var(--color-text-muted, #999); margin-top: 0.125rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+</style>
