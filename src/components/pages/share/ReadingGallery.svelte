@@ -126,7 +126,7 @@
   .detail-title { font-size: 1.25rem; font-weight: 700; margin: 0 0 0.25rem; }
   .detail-author { font-size: 0.8125rem; color: var(--color-text-muted, #999); margin: 0; }
   .detail-divider { width: 2rem; height: 2px; background: var(--primary); margin: 1rem auto; border-radius: 1px; }
-  .detail-review { font-size: 0.875rem; line-height: 1.75; text-align: left; color: var(--color-text, #333); }
+  .detail-review { font-size: 0.875rem; line-height: 1.75; text-align: left; color: var(--color-text, #333); white-space: pre-line; }
   :global(.dark) .detail-review { color: #ccc; }
   .detail-link { display: inline-block; margin-top: 1rem; font-size: 0.8125rem; color: var(--primary); text-decoration: none; }
   .detail-link:hover { text-decoration: underline; }
