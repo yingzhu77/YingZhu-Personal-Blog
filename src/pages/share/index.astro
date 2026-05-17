@@ -5,6 +5,7 @@ import { books } from "@/config/readingConfig";
 import { musicPlayerConfig } from "@/config/musicConfig";
 import WallpaperGallery from "@/components/pages/share/WallpaperGallery.svelte";
 import ReadingGallery from "@/components/pages/share/ReadingGallery.svelte";
+import PlaylistPicker from "@/components/pages/share/PlaylistPicker.svelte";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
@@ -57,6 +58,17 @@ const isLocal = musicPlayerConfig.mode === "local";
 const meting = musicPlayerConfig.meting;
 const localPlaylist = musicPlayerConfig.local?.playlist ?? [];
 const musicCount = isLocal ? localPlaylist.length : 0;
+const playlists = (musicPlayerConfig.playlists ?? []).map((pl) => ({
+	id: pl.id,
+	name: pl.name,
+	description: pl.description ?? "",
+	cover: pl.cover ?? "",
+	server: pl.server ?? "netease",
+	type: pl.type ?? "playlist",
+	id_meting: pl.id_meting ?? "",
+	default: pl.default ?? false,
+}));
+const hasPlaylists = playlists.length > 0;
 ---
 
 <MainGridLayout title={title} description={description}>
@@ -77,7 +89,7 @@ const musicCount = isLocal ? localPlaylist.length : 0;
           </a>
         </div>
         <p class="text-sm text-neutral-500 dark:text-neutral-400 mb-1">一张好图总让人心情舒畅。</p>
-        <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-5">勾选喜欢的壁纸加入随机轮换池（上限 6 张），点击缩略图可放大预览。</p>
+        <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-5">勾选喜欢的壁纸加入随机轮换池，点击缩略图可放大预览。</p>
         <WallpaperGallery wallpapers={wallpaperItems} client:visible />
       </section>
 
@@ -95,7 +107,7 @@ const musicCount = isLocal ? localPlaylist.length : 0;
           </a>
         </div>
         <p class="text-sm text-neutral-500 dark:text-neutral-400 mb-1">一本书就是一个世界。</p>
-        <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-5">光标悬停查看评价片段，点击卡片阅读完整记录。</p>
+        <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-5">在这个如此浮躁的世界慢下来，买一张前往异世界的车票已是如此之难</p>
         {books.length > 0 ? (
           <ReadingGallery books={books} client:visible />
         ) : (
@@ -115,33 +127,37 @@ const musicCount = isLocal ? localPlaylist.length : 0;
             </div>
             <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100">音乐分享</h2>
           </div>
-          <a href="/share/music/" class="btn-plain scale-animation rounded-lg px-3 py-2 text-sm text-(--primary) hover:bg-(--btn-regular-bg) transition-colors flex items-center gap-1">
-            <span>全部</span><span class="text-xs opacity-60">→</span>
-          </a>
         </div>
         <p class="text-sm text-neutral-500 dark:text-neutral-400 mb-1">戴上耳机，进入另一个世界。</p>
-        <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-5">
-          {isLocal ? `本地音乐 · ${musicCount} 首` : `网易云歌单 · ID ${meting?.id}`} — 侧边栏播放器可控播放
-        </p>
-        {isLocal && localPlaylist.length > 0 ? (
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {localPlaylist.map((song) => (
-              <div class="music-card">
-                {song.cover ? (
-                  <img src={song.cover} alt={song.name} class="music-cover" loading="lazy" />
-                ) : (
-                  <div class="music-cover-placeholder"><span class="text-2xl opacity-30 select-none">♪</span></div>
-                )}
-                <div class="music-info">
-                  <span class="music-name">{song.name}</span>
-                  <span class="music-artist">{song.artist}</span>
+        {hasPlaylists ? (
+          <>
+            <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-4">点击歌单卡片切换播放，侧边栏播放器可控播放（我bu是✌🦌厨）</p>
+            <PlaylistPicker playlists={playlists} client:idle />
+          </>
+        ) : isLocal && localPlaylist.length > 0 ? (
+          <>
+            <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-5">
+              本地音乐 · {musicCount} 首 — 侧边栏播放器可控播放
+            </p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {localPlaylist.map((song) => (
+                <div class="music-card">
+                  {song.cover ? (
+                    <img src={song.cover} alt={song.name} class="music-cover" loading="lazy" />
+                  ) : (
+                    <div class="music-cover-placeholder"><span class="text-2xl opacity-30 select-none">♪</span></div>
+                  )}
+                  <div class="music-info">
+                    <span class="music-name">{song.name}</span>
+                    <span class="music-artist">{song.artist}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </>
         ) : (
           <div class="text-center py-10 text-neutral-400">
-            <p class="text-sm">{isLocal ? "暂无本地歌曲" : "在线歌单播放中"}</p>
+            <p class="text-sm">{isLocal ? "暂无本地歌曲" : `网易云歌单 · ID ${meting?.id}`}</p>
             <p class="text-xs mt-1">侧边栏音乐播放器查看完整列表</p>
           </div>
         )}

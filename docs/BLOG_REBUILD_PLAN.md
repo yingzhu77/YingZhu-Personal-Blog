@@ -95,7 +95,7 @@
 
 ### 待完成: 内容替换 (剩余)
 
-- [ ] **横幅文字** — `backgroundWallpaper.ts` 中 `homeText.title` 仍为 `"Lovely firefly!"`，副标题为英文诗句（用户要求暂时不改）
+- [x] **横幅文字** — `backgroundWallpaper.ts` 中 `homeText.title` 改为 `"人生如梦，一尊还酹江月。"`（2026-05-17），副标题英文小诗暂时保留
 - [ ] **友链列表** — `friendsConfig.ts` 中仍为 demo 友链（用户要求暂时不动）
 - [ ] **留言板** — `guestbook.md` 内容已通用，但需配置评论系统 (`commentConfig.ts`) 后才能正常使用
 - [ ] **域名** — `siteConfig.site_url` 仍为占位符，上线前需替换为真实域名
@@ -107,7 +107,7 @@
   - 功能: 展示 GitHub 项目，含语言、简介、技术栈标签
   - 实现: 新建 `src/pages/projects/` 路由 + `src/config/projectsConfig.ts`
   - 首个项目: mINDCare Studio (Vue3 + NestJS AI 心理健康平台)
-- [ ] **兴趣分享模块**
+- [x] **兴趣分享模块** (阅读 + 音乐)
   - 设计: 标签分类 + 卡片/列表混合布局
   - 内容: 技术栈 / 书籍 / 工具 / 网站推荐
   - 实现: MDX 集合 + 自定义列表页
@@ -125,14 +125,22 @@
 
 ### 保持的现有功能 (Phase 4 配置)
 
-- [x] 音乐播放器 (Meting API)
+- [x] 音乐播放器 (Meting API + 多歌单切换)
+  - 4 组歌单/专辑: 崩坏：星穹铁道 / ヨルシカ全收录 / 二人称 / 夏草が邪魔をする
+  - CD 唱片圆形卡片 + 播放中旋转动画 (7s)
+  - 后台预加载封面（600ms 节流），不影响首屏性能
+  - MusicManager 新增 `switchPlaylist()` / `fetchCover()` API
+  - 新建 `PlaylistPicker.svelte` 横向滚动选择组件
+  - 删除 `/share/music/` 独立音乐页，统一在分享页展示
 - [x] Bangumi 追番 (编译时获取)
 - [x] 相册 (Gallery)
 - [x] 友链页面框架 (Friends)
 - [x] Live2D / Spine 看板娘
 - [x] 随机切换壁纸
 - [ ] 评论系统 (Waline / Giscus / Artalk / Twikoo 多选一，未配置)
-- [x] 搜索 (Pagefind)
+- [x] 搜索 (Pagefind — 生产模式正常工作，开发模式展示 mock 结果)
+- [x] Favicon/Logo 修复 — `Layout.astro` 路径处理，子页面 favicon 不再 404
+- [x] 壁纸池初始加载修复 — `MainGridLayout.astro` `__getPoolIndices` 前置
 
 ---
 

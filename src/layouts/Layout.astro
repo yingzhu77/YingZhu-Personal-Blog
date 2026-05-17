@@ -165,7 +165,7 @@ const siteLang = lang.replace("_", "-");
       favicons.map((favicon) => (
         <link
           rel="icon"
-          href={favicon.src.startsWith("/") ? url(favicon.src) : favicon.src}
+          href={favicon.src.startsWith("http") ? favicon.src : url(favicon.src)}
           sizes={favicon.sizes}
           media={favicon.theme && `(prefers-color-scheme: ${favicon.theme})`}
         />

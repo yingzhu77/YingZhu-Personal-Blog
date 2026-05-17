@@ -18,6 +18,7 @@
   let lightboxImage: WallpaperData | null = $state(null);
   let initialized = $state(false);
   let imagesLoaded: Record<string, boolean> = $state({});
+  let isCurrent: Record<string, boolean> = $state({});
   const POOL_MAX = 6;
 
   // Lightbox zoom & pan state
@@ -37,6 +38,51 @@
   // 图片加载完成回调
   function onImageLoad(name: string) {
     imagesLoaded[name] = true;
+  }
+
+  // 检测当前壁纸
+  function checkCurrentWallpaper(name: string): boolean {
+    if (typeof window.__bannerDynamicWallpaper !== "undefined") {
+      return window.__bannerDynamicWallpaper.name === name;
+    }
+    if (typeof window.__bannerRandomIndex === "undefined") return false;
+    const container = document.getElementById("banner-images-container");
+    if (!container) return false;
+    const isDesktop = window.innerWidth >= 1024;
+    try {
+      const namesJson = isDesktop ? container.dataset.desktopImageNames : container.dataset.mobileImageNames;
+      if (!namesJson) return false;
+      const names = JSON.parse(namesJson);
+      const currentIdx = isDesktop ? window.__bannerRandomIndex.desktop : window.__bannerRandomIndex.mobile;
+      if (currentIdx === -1) return false;
+      return names[currentIdx] === name;
+    } catch { return false; }
+  }
+
+  // 定期刷新当前壁纸状态
+  $effect(() => {
+    const interval = setInterval(() => {
+      const newCurrent: Record<string, boolean> = {};
+      for (const w of wallpapers) {
+        newCurrent[w.name] = checkCurrentWallpaper(w.name);
+      }
+      isCurrent = newCurrent;
+    }, 1000);
+    return () => clearInterval(interval);
+  });
+
+  // 初始检测
+  $effect(() => {
+    const newCurrent: Record<string, boolean> = {};
+    for (const w of wallpapers) {
+      newCurrent[w.name] = checkCurrentWallpaper(w.name);
+    }
+    isCurrent = newCurrent;
+  });
+
+  // 设为当前壁纸
+  function setAsCurrent(item: WallpaperData) {
+    window.dispatchEvent(new CustomEvent("setSpecificWallpaper", { detail: { name: item.name } }));
   }
 
   // 初始化：从 localStorage 读取或默认全选
@@ -81,6 +127,10 @@
     if (pool.includes(name)) {
       if (pool.length <= 1) return;
       pool = pool.filter((n) => n !== name);
+      // 如果移除的正是当前显示的壁纸，立即随机切换到池中另一张
+      if (isCurrentWallpaper(name)) {
+        window.dispatchEvent(new CustomEvent("randomWallpaper"));
+      }
     } else {
       if (pool.length >= POOL_MAX) {
         // 池满时自动替换最旧项（FIFO）
@@ -88,6 +138,25 @@
       } else {
         pool = [...pool, name];
       }
+      // 加入池后立即切换到该壁纸
+      window.dispatchEvent(new CustomEvent("setSpecificWallpaper", { detail: { name } }));
+    }
+  }
+
+  // 判断指定壁纸是否是当前正在显示的壁纸
+  function isCurrentWallpaper(name: string): boolean {
+    if (typeof window.__bannerRandomIndex === "undefined") return false;
+    const container = document.getElementById("banner-images-container");
+    if (!container) return false;
+    const isDesktop = window.innerWidth >= 1024;
+    try {
+      const namesJson = isDesktop ? container.dataset.desktopImageNames : container.dataset.mobileImageNames;
+      if (!namesJson) return false;
+      const names = JSON.parse(namesJson);
+      const currentIdx = isDesktop ? window.__bannerRandomIndex.desktop : window.__bannerRandomIndex.mobile;
+      return names[currentIdx] === name;
+    } catch {
+      return false;
     }
   }
 
@@ -192,7 +261,7 @@
 <div class="wallpaper-gallery">
   <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-4">
     {#each wallpapers as wallpaper}
-      <div class="wallpaper-card group">
+      <div class="wallpaper-card group" class:is-active={isCurrent[wallpaper.name]}>
         <!-- 缩略图 -->
         <button
           class="wallpaper-thumbnail-wrapper"
@@ -221,11 +290,15 @@
           {/if}
           <!-- hover 放大图标 -->
           <div class="thumbnail-overlay">
-            <Icon icon="material-symbols:zoom-in-rounded" class="text-[1.5rem] text-white" />
+            {#if isCurrent[wallpaper.name]}
+              <Icon icon="material-symbols:check-circle-rounded" class="text-[1.25rem] text-white" />
+            {:else}
+              <Icon icon="material-symbols:zoom-in-rounded" class="text-[1.5rem] text-white" />
+            {/if}
           </div>
         </button>
 
-        <!-- 卡片底部：仅色相 + 开关 -->
+        <!-- 卡片底部：色相 + 当前标记 + 开关 -->
         <div class="card-info">
           <span
             class="hue-dot"
@@ -233,6 +306,12 @@
             title="色相 {wallpaper.hue}°"
           ></span>
           <span class="hue-label">H: {wallpaper.hue}°</span>
+          {#if isCurrent[wallpaper.name]}
+            <span class="current-badge">
+              <Icon icon="material-symbols:wallpaper-rounded" class="text-[0.75rem]" />
+              当前
+            </span>
+          {/if}
           <span class="flex-1"></span>
           <button
             class="pool-toggle"
@@ -240,8 +319,8 @@
             class:disabled={isInPool(wallpaper.name) && pool.length <= 1}
             onclick={() => toggle(wallpaper.name)}
             disabled={isInPool(wallpaper.name) && pool.length <= 1}
-            aria-label={isInPool(wallpaper.name) ? "从轮换池移除" : pool.length >= POOL_MAX ? "池满，点击替换" : "加入轮换池"}
-            title={isInPool(wallpaper.name) ? "已在轮换池中" : pool.length >= POOL_MAX ? "轮换池已满(6张)，点击将替换最旧项" : "点击加入轮换池"}
+            aria-label={isInPool(wallpaper.name) ? "从轮换池移除" : "加入轮换池"}
+            title={isInPool(wallpaper.name) ? "已在轮换池中" : "点击加入轮换池"}
           >
             <span class="toggle-track">
               <span class="toggle-thumb"></span>
@@ -256,7 +335,7 @@
   <div class="pool-status">
     <Icon icon="material-symbols:shuffle-rounded" class="text-[1rem] text-(--primary)" />
     <span class="text-xs text-neutral-500 dark:text-neutral-400">
-      当前轮换池：{pool.length} / {POOL_MAX} 张（上限 6 张）
+      当前轮换池：{pool.length} 张
     </span>
   </div>
 </div>
@@ -320,6 +399,21 @@
         {/if}
       </div>
 
+      <!-- 设为当前壁纸按钮 — 左下角毛玻璃气泡 -->
+      <div class="action-controls" onclick={(e) => e.stopPropagation()}>
+        {#if isCurrent[lightboxImage.name]}
+          <div class="current-indicator" aria-label="当前壁纸">
+            <Icon icon="material-symbols:check-circle-rounded" class="text-[1.25rem]" />
+            <span class="action-label">当前壁纸</span>
+          </div>
+        {:else}
+          <button class="action-btn" onclick={() => setAsCurrent(lightboxImage)} aria-label="设为当前壁纸" title="设为当前壁纸">
+            <Icon icon="material-symbols:wallpaper-rounded" class="text-[1.25rem]" />
+            <span class="action-label">设为壁纸</span>
+          </button>
+        {/if}
+      </div>
+
       <!-- 画师署名（仅当有 artist 时显示） -->
       {#if lightboxImage.artist}
         <div class="lightbox-caption" onclick={(e) => e.stopPropagation()}>
@@ -335,13 +429,18 @@
     border-radius: var(--radius-large, 0.75rem);
     overflow: hidden;
     background: var(--card-bg, #fff);
-    border: 1px solid var(--line-divider, transparent);
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    border: 2px solid var(--line-divider, transparent);
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   }
 
   .wallpaper-card:hover {
     border-color: oklch(from var(--primary) l c h / 0.25);
     transform: translateY(-1px);
+  }
+
+  .wallpaper-card.is-active {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary), 0 4px 16px oklch(from var(--primary) l c h / 0.2);
   }
 
   .wallpaper-thumbnail-wrapper {
@@ -417,6 +516,10 @@
     background: rgba(0, 0, 0, 0.3);
   }
 
+  .wallpaper-card.is-active .thumbnail-overlay {
+    background: rgba(0, 0, 0, 0.15);
+  }
+
   .thumbnail-overlay :global(svg) {
     opacity: 0;
     transform: scale(0.8);
@@ -424,6 +527,11 @@
   }
 
   .wallpaper-card:hover .thumbnail-overlay :global(svg) {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .wallpaper-card.is-active .thumbnail-overlay :global(svg) {
     opacity: 1;
     transform: scale(1);
   }
@@ -446,6 +554,15 @@
   .hue-label {
     font-size: 0.6875rem;
     color: var(--color-text-muted, #999);
+  }
+
+  .current-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.625rem;
+    color: var(--primary);
+    font-weight: 500;
   }
 
   /* Toggle Switch */
@@ -579,7 +696,41 @@
   }
   .artist-credit { font-size: 0.75rem; color: rgba(255,255,255,0.8); }
 
+  /* 设为壁纸 — 左下角毛玻璃气泡 */
+  .action-controls {
+    position: absolute; bottom: 1rem; left: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
+    padding: 0.5rem 0.75rem; border-radius: 2rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.35);
+  }
+  .action-btn {
+    min-width: 2.5rem; min-height: 2.5rem; border-radius: 2rem;
+    border: none; background: rgba(255,255,255,0.15); color: #fff;
+    display: flex; align-items: center; justify-content: center; gap: 0.375rem;
+    cursor: pointer; transition: background 0.15s ease, transform 0.12s ease;
+    padding: 0.5rem 0.875rem;
+  }
+  .action-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
+  .action-btn:active { transform: scale(0.95); }
+  .action-btn:focus-visible { outline: 2px solid rgba(255,255,255,0.6); outline-offset: 2px; }
+  .action-label { font-size: 0.75rem; color: rgba(255,255,255,0.9); font-weight: 500; white-space: nowrap; }
+  .current-indicator {
+    display: flex; align-items: center; gap: 0.375rem;
+    min-height: 2.5rem; padding: 0.5rem 0.875rem;
+    border-radius: 2rem; background: rgba(255,255,255,0.08);
+  }
+  .current-indicator :global(svg) { color: rgba(255,255,255,0.7); }
+  .current-indicator .action-label { color: rgba(255,255,255,0.7); }
+
   @keyframes lightbox-fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+  @media (max-width: 640px) {
+    .action-controls { bottom: 4.5rem; left: 0.5rem; padding: 0.375rem 0.5rem; }
+    .action-btn { min-width: 2.25rem; min-height: 2.25rem; padding: 0.375rem 0.625rem; }
+    .action-label { font-size: 0.6875rem; }
+    .zoom-controls { bottom: 0.5rem; right: 0.5rem; }
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .lightbox-backdrop { animation: none; }
@@ -588,5 +739,7 @@
     .wallpaper-thumbnail { transition: none; }
     .toggle-thumb { transition: none; }
     .wallpaper-card:hover .wallpaper-thumbnail { transform: none; }
+    .wallpaper-card { transition: none; }
+    .action-btn { transition: none; }
   }
 </style>

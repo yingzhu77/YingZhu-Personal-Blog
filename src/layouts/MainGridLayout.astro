@@ -272,28 +272,14 @@ const wallpaperHueSwitchable = wallpaperHueConfig?.switchable ?? false;
 const fixedHue = wallpaperHueConfig?.fixedHue ?? 250;
 const imageHueMap = wallpaperHueConfig?.imageHueMap ?? {};
 // 提取图片名(不含路径和扩展名)用于色相映射查找
-const desktopImageNames = (
-	Array.isArray(backgroundImages.desktop)
-		? backgroundImages.desktop
-		: [backgroundImages.desktop]
-).map((path) =>
-	path
-		.replace(/\\/g, "/")
-		.split("/")
-		.pop()
-		.replace(/\.[^/.]+$/, ""),
-);
-const mobileImageNames = (
-	Array.isArray(backgroundImages.mobile)
-		? backgroundImages.mobile
-		: [backgroundImages.mobile]
-).map((path) =>
-	path
-		.replace(/\\/g, "/")
-		.split("/")
-		.pop()
-		.replace(/\.[^/.]+$/, ""),
-);
+const desktopImageNames = backgroundImages.desktop.map((path) => {
+	const fileName = path.replace(/\\/g, "/").split("/").pop();
+	return fileName?.replace(/\.[^/.]+$/, "") ?? "";
+});
+const mobileImageNames = backgroundImages.mobile.map((path) => {
+	const fileName = path.replace(/\\/g, "/").split("/").pop();
+	return fileName?.replace(/\.[^/.]+$/, "") ?? "";
+});
 ---
 
 <Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} postSlug={postSlug}>
@@ -421,6 +407,34 @@ const mobileImageNames = (
         ))}
     </div>
 
+    <!-- wallpaperPool 辅助函数（必须在随机化脚本之前，供初始加载和随机切换共用） -->
+    <script is:inline data-swup-ignore-script>
+        window.__getPoolIndices = function(type) {
+            var container = document.getElementById('banner-images-container');
+            if (!container) return null;
+            try {
+                var stored = localStorage.getItem('wallpaperPool');
+                if (!stored) return null;
+                var pool = JSON.parse(stored);
+                if (!Array.isArray(pool) || pool.length === 0) return null;
+                var namesJson = type === 'desktop'
+                    ? container.dataset.desktopImageNames
+                    : container.dataset.mobileImageNames;
+                if (!namesJson) return null;
+                var names = JSON.parse(namesJson);
+                var indices = [];
+                for (var i = 0; i < names.length; i++) {
+                    if (pool.indexOf(names[i]) !== -1) {
+                        indices.push(i);
+                    }
+                }
+                return indices.length > 0 ? indices : null;
+            } catch (e) {
+                return null;
+            }
+        };
+    </script>
+
     <!-- 客户端随机选择图片脚本 -->
     <script is:inline data-swup-ignore-script>
         (function randomizeBannerImage() {
@@ -448,11 +462,22 @@ const mobileImageNames = (
             rememberInitialFrame('banner-image-slot-mobile');
             rememberInitialFrame('banner-image-slot-desktop');
 
+            // 从 wallpaperPool 中选取随机索引，回退到全量随机
+            function pickPoolRandomIndex(type, totalCount) {
+                if (totalCount <= 1) return 0;
+                var poolIndices = window.__getPoolIndices(type);
+                if (poolIndices && poolIndices.length >= 1) {
+                    if (poolIndices.length === 1) return poolIndices[0];
+                    return poolIndices[Math.floor(Math.random() * poolIndices.length)];
+                }
+                return Math.floor(Math.random() * totalCount);
+            }
+
             // F5 刷新重置，Swup 切换保留
             if (typeof window.__bannerRandomIndex === 'undefined') {
                 window.__bannerRandomIndex = {
-                    mobile: mobileCount > 1 ? Math.floor(Math.random() * mobileCount) : 0,
-                    desktop: desktopCount > 1 ? Math.floor(Math.random() * desktopCount) : 0
+                    mobile: pickPoolRandomIndex('mobile', mobileCount),
+                    desktop: pickPoolRandomIndex('desktop', desktopCount)
                 };
             }
 
@@ -506,32 +531,6 @@ const mobileImageNames = (
 
     <!-- 随机壁纸切换事件处理 -->
     <script is:inline data-swup-ignore-script>
-        // 获取 wallpaperPool 允许的索引列表（供轮播和随机切换共用）
-        window.__getPoolIndices = function(type) {
-            var container = document.getElementById('banner-images-container');
-            if (!container) return null;
-            try {
-                var stored = localStorage.getItem('wallpaperPool');
-                if (!stored) return null;
-                var pool = JSON.parse(stored);
-                if (!Array.isArray(pool) || pool.length === 0) return null;
-                var namesJson = type === 'desktop'
-                    ? container.dataset.desktopImageNames
-                    : container.dataset.mobileImageNames;
-                if (!namesJson) return null;
-                var names = JSON.parse(namesJson);
-                var indices = [];
-                for (var i = 0; i < names.length; i++) {
-                    if (pool.indexOf(names[i]) !== -1) {
-                        indices.push(i);
-                    }
-                }
-                return indices.length > 0 ? indices : null;
-            } catch (e) {
-                return null;
-            }
-        };
-
         window.addEventListener('randomWallpaper', function() {
             var container = document.getElementById('banner-images-container');
             if (!container) return;
@@ -599,6 +598,141 @@ const mobileImageNames = (
 
             // 更新色相
             if (typeof window.__applyImageHue === 'function') {
+                window.__applyImageHue();
+            }
+        });
+
+        // 指定壁纸名称立即切换事件（供 WallpaperGallery 等组件调用）
+        window.addEventListener('setSpecificWallpaper', function(e) {
+            var wallpaperName = e.detail && e.detail.name;
+            if (!wallpaperName) return;
+            var container = document.getElementById('banner-images-container');
+            if (!container) return;
+
+            function findIndexByName(type) {
+                var namesJson = type === 'desktop'
+                    ? container.dataset.desktopImageNames
+                    : container.dataset.mobileImageNames;
+                if (!namesJson) return -1;
+                try {
+                    var names = JSON.parse(namesJson);
+                    for (var i = 0; i < names.length; i++) {
+                        if (names[i] === wallpaperName) return i;
+                    }
+                } catch (err) { return -1; }
+                return -1;
+            }
+
+            function replaceSlot(slotClass, tplClass, newIndex) {
+                if (newIndex === 0) {
+                    var initialHtml = window.__bannerInitialFrameHtml && window.__bannerInitialFrameHtml[slotClass];
+                    var slot = container.querySelector('.' + slotClass);
+                    if (slot && initialHtml) {
+                        slot.innerHTML = initialHtml;
+                    }
+                    return;
+                }
+                var slot = container.querySelector('.' + slotClass);
+                var templates = container.querySelectorAll('.' + tplClass);
+                if (!slot || !templates.length) return;
+                var tpl = templates[newIndex - 1];
+                if (!tpl) return;
+                slot.innerHTML = '';
+                slot.appendChild(tpl.content.cloneNode(true));
+            }
+
+            var desktopIdx = findIndexByName('desktop');
+            var mobileIdx = findIndexByName('mobile');
+
+            if (desktopIdx === -1 && mobileIdx === -1) return;
+
+            if (typeof window.__bannerRandomIndex === 'undefined') {
+                window.__bannerRandomIndex = { mobile: 0, desktop: 0 };
+            }
+
+            // 只更新找到的索引，未找到则保持当前
+            if (desktopIdx !== -1) {
+                window.__bannerRandomIndex.desktop = desktopIdx;
+                replaceSlot('banner-image-slot-desktop', 'banner-tpl-desktop', desktopIdx);
+            }
+            if (mobileIdx !== -1) {
+                window.__bannerRandomIndex.mobile = mobileIdx;
+                replaceSlot('banner-image-slot-mobile', 'banner-tpl-mobile', mobileIdx);
+            }
+
+            // 同步轮播索引
+            if (typeof window.__bannerCarouselIndex !== 'undefined') {
+                if (desktopIdx !== -1) window.__bannerCarouselIndex.desktop = desktopIdx;
+                if (mobileIdx !== -1) window.__bannerCarouselIndex.mobile = mobileIdx;
+            }
+
+            // 更新色相
+            if (typeof window.__applyImageHue === 'function') {
+                window.__applyImageHue();
+            }
+        });
+
+        // URL 动态壁纸切换事件（供 AllImagesGallery 等组件调用，支持非配置壁纸）
+        window.addEventListener('setSpecificWallpaperByUrl', function(e) {
+            var detail = e.detail || {};
+            var url = detail.url;
+            var name = detail.name;
+            var hue = detail.hue;
+            if (!url) return;
+
+            var container = document.getElementById('banner-images-container');
+            if (!container) return;
+
+            // 如果壁纸名匹配配置壁纸，优先使用 setSpecificWallpaper 事件（有模板优化）
+            if (name) {
+                try {
+                    var dNames = JSON.parse(container.dataset.desktopImageNames || '[]');
+                    var mNames = JSON.parse(container.dataset.mobileImageNames || '[]');
+                    if (dNames.indexOf(name) !== -1 || mNames.indexOf(name) !== -1) {
+                        window.dispatchEvent(new CustomEvent('setSpecificWallpaper', { detail: { name: name } }));
+                        return;
+                    }
+                } catch (err) { /* fallback to URL-based */ }
+            }
+
+            // 非配置壁纸：动态创建 img 元素替换 slot
+            function replaceSlotWithUrl(slotClass, imgUrl) {
+                var slot = container.querySelector('.' + slotClass);
+                if (!slot) return;
+                slot.innerHTML = '';
+                var img = document.createElement('img');
+                img.src = imgUrl;
+                img.alt = 'Background wallpaper';
+                img.className = 'object-cover h-full w-full';
+                img.draggable = false;
+                img.loading = 'eager';
+                slot.appendChild(img);
+            }
+
+            replaceSlotWithUrl('banner-image-slot-mobile', url);
+            replaceSlotWithUrl('banner-image-slot-desktop', url);
+
+            // 标记当前为动态壁纸（索引 -1 表示非配置范围）
+            if (typeof window.__bannerRandomIndex === 'undefined') {
+                window.__bannerRandomIndex = { mobile: 0, desktop: 0 };
+            }
+            window.__bannerRandomIndex.mobile = -1;
+            window.__bannerRandomIndex.desktop = -1;
+
+            // 记录动态壁纸信息，供 isCurrentWallpaper 判断
+            window.__bannerDynamicWallpaper = { url: url, name: name };
+
+            // 同步轮播索引
+            if (typeof window.__bannerCarouselIndex !== 'undefined') {
+                window.__bannerCarouselIndex.mobile = -1;
+                window.__bannerCarouselIndex.desktop = -1;
+            }
+
+            // 应用色相（非配置壁纸直接设置）
+            if (typeof hue === 'number') {
+                document.documentElement.style.setProperty('--hue', String(hue));
+                localStorage.setItem('hue', String(hue));
+            } else if (typeof window.__applyImageHue === 'function') {
                 window.__applyImageHue();
             }
         });

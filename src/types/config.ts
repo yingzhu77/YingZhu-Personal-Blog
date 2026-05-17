@@ -714,6 +714,18 @@ export type MusicPlayerConfig = {
 			lrc?: string; // 歌词内容，支持 LRC 格式
 		}>;
 	};
+
+	// 多歌单切换配置（可选，不配置则沿用单歌单模式）
+	playlists?: Array<{
+		id: string; // 唯一标识符（用于 DOM/事件区分）
+		name: string; // 歌单名称
+		description?: string; // 短文案（hover 浮层展示）
+		cover?: string; // 预配置封面 URL
+		server?: "netease" | "tencent" | "kugou" | "xiami" | "baidu";
+		type?: "playlist" | "album" | "song";
+		id_meting?: string; // Meting 歌单/专辑 ID
+		default?: boolean; // 是否为默认歌单（初始加载时播放）
+	}>;
 };
 
 // 赞助方式类型

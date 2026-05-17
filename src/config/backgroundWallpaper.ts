@@ -41,21 +41,21 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		// 桌面背景图片（支持单张或多张随机）
 		// desktop: "assets/images/wallpapers/d1.avif",
 		desktop: [
-			"assets/images/wallpapers/night-purple.avif",
-			"assets/images/wallpapers/sky-marine.avif",
-			"assets/images/wallpapers/lavender-warm.avif",
-			"assets/images/wallpapers/ocean-deep.avif",
-			"assets/images/wallpapers/blue-mid.avif",
-			"assets/images/wallpapers/cyan-bright.avif",
+		"assets/images/wallpapers/night-purple.avif",
+		"assets/images/wallpapers/fu-warm.jpeg",
+		"assets/images/wallpapers/lavender-warm.avif",
+		"assets/images/wallpapers/star-warm.jpeg",
+		"assets/images/wallpapers/bea-purple.jpeg",
+		"assets/images/wallpapers/cyan-bright.avif",
 		],
 		// 移动背景图片（支持单张或多张随机）
 		mobile: [
-			"assets/images/wallpapers/night-purple.avif",
-			"assets/images/wallpapers/sky-marine.avif",
-			"assets/images/wallpapers/lavender-warm.avif",
-			"assets/images/wallpapers/ocean-deep.avif",
-			"assets/images/wallpapers/blue-mid.avif",
-			"assets/images/wallpapers/cyan-bright.avif",
+		"assets/images/wallpapers/night-purple.avif",
+		"assets/images/wallpapers/fu-warm.jpeg",
+		"assets/images/wallpapers/lavender-warm.avif",
+		"assets/images/wallpapers/star-warm.jpeg",
+		"assets/images/wallpapers/bea-purple.jpeg",
+		"assets/images/wallpapers/cyan-bright.avif",
 		],
 	},
 	// 横幅壁纸和全屏壁纸共享配置
@@ -69,7 +69,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 是否允许用户通过控制面板切换横幅标题显示
 			switchable: true,
 			// 主页横幅主标题
-			title: "Lovely firefly!",
+			title: "人生如梦，一尊还酹江月。",
 			// 主页横幅主标题字体大小
 			titleSize: "3.8rem",
 			// 主页横幅副标题
@@ -179,12 +179,12 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		fixedHue: 250,
 		switchable: true,
 		imageHueMap: {
-			"night-purple": 262,
-			"sky-marine": 240,
-			"lavender-warm": 320,
-			"ocean-deep": 263,
-			"blue-mid": 255,
-			"cyan-bright": 232,
+		"night-purple": 262,
+		"fu-warm": 38,
+		"lavender-warm": 320,
+		"star-warm": 42,
+		"bea-purple": 280,
+		"cyan-bright": 232,
 		},
 	},
 };

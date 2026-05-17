@@ -58,4 +58,49 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 			},
 		],
 	},
+
+	// 多歌单切换配置（可选）
+	// 配置后在分享页展示横向滚动歌单选择器，不配置则沿用单歌单模式
+	playlists: [
+		{
+			id: "starrail-songs",
+			name: "崩坏：星穹铁道",
+			description: "知更鸟的歌，愿你能在银河中自由地歌唱。",
+			cover: "",
+			server: "netease",
+			type: "playlist",
+			id_meting: "10046455237",
+			default: true,
+		},
+		{
+			id: "yorushika-collection",
+			name: "ヨルシカ · 全专辑收录",
+			description: "だから僕は音楽を辞めた / エルマ / 盗作 / 幻燈 — 夜鹿经典全收录",
+			cover: "",
+			server: "netease",
+			type: "playlist",
+			id_meting: "8780955963",
+			default: false,
+		},
+		{
+			id: "yorushika-gento",
+			name: "二人称",
+			description: "太陽、晴る、アポリア — 14 首幻燈物語",
+			cover: "",
+			server: "netease",
+			type: "album",
+			id_meting: "364564348",
+			default: false,
+		},
+		{
+			id: "yorushika-natsukusa",
+			name: "夏草が邪魔をする",
+			description: "言って。 / 雲と幽霊 / 靴の花火 — 夜鹿早期经典EP",
+			cover: "",
+			server: "netease",
+			type: "album",
+			id_meting: "35670522",
+			default: false,
+		},
+	],
 };

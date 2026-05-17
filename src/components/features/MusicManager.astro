@@ -28,10 +28,22 @@ const localPlaylist =
 			})
 		: [];
 
+const playlists = (config.playlists ?? []).map((pl) => ({
+	id: pl.id,
+	name: pl.name,
+	description: pl.description ?? "",
+	cover: pl.cover ?? "",
+	server: pl.server ?? "netease",
+	type: pl.type ?? "playlist",
+	id_meting: pl.id_meting ?? "",
+	default: pl.default ?? false,
+}));
+
 const managerConfigStr = JSON.stringify({
 	mode: config.mode,
 	meting: config.meting,
 	localPlaylist: localPlaylist,
+	playlists: playlists,
 	volume: config.volume ?? 0.7,
 	playMode: config.playMode ?? "list",
 	showLyrics: config.showLyrics ?? true,
@@ -52,6 +64,7 @@ const managerConfigStr = JSON.stringify({
 		pause: i18n(I18nKey.musicPause),
 		progress: i18n(I18nKey.musicProgress),
 		noCover: i18n(I18nKey.musicNoCover),
+		switching: "正在切换歌单…",
 	},
 });
 ---
@@ -114,7 +127,8 @@ const managerConfigStr = JSON.stringify({
         currentLrcIndex: -1,
         initialized: false,
         initializing: false,
-        error: null
+        error: null,
+        currentPlaylistId: null
     };
 
     // Map config playMode string to number
@@ -127,29 +141,31 @@ const managerConfigStr = JSON.stringify({
         window.dispatchEvent(new CustomEvent(name, { detail: detail || {} }));
     }
 
-    // ── Meting fetch ─────────────────────────────────────────
-    async function fetchMetingData() {
-        if (!config.meting) return;
-        var m = config.meting;
+    // ── Meting fetch (可复用：switchPlaylist 也可调用) ─────
+    function buildMetingUrls(server, type, id) {
+        var m = config.meting || {};
         var apis = [m.api].concat(m.fallbackApis || []);
+        return apis.map(function (baseApi) {
+            if (!baseApi) return null;
+            var u = baseApi
+                .replace(':server', server)
+                .replace(':type', type)
+                .replace(':id', id)
+                .replace(':r', Math.random());
+            if (m.auth) u += '&auth=' + m.auth;
+            return u;
+        }).filter(Boolean);
+    }
 
-        for (var i = 0; i < apis.length; i++) {
-            var baseApi = apis[i];
-            if (!baseApi) continue;
+    async function fetchMetingPlaylist(server, type, id) {
+        var urls = buildMetingUrls(server, type, id);
+        for (var i = 0; i < urls.length; i++) {
             try {
-                var fetchUrl = baseApi
-                    .replace(':server', m.server)
-                    .replace(':type', m.type)
-                    .replace(':id', m.id)
-                    .replace(':r', Math.random());
-                if (m.auth) fetchUrl += '&auth=' + m.auth;
-
-                var res = await fetch(fetchUrl);
+                var res = await fetch(urls[i]);
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 var data = await res.json();
-
                 if (Array.isArray(data) && data.length > 0) {
-                    state.playlist = data.map(function (item) {
+                    return data.map(function (item) {
                         return {
                             name: item.title || item.name || 'Unknown',
                             artist: item.author || item.artist || 'Unknown',
@@ -158,13 +174,18 @@ const managerConfigStr = JSON.stringify({
                             lrc: item.lrc
                         };
                     });
-                    return;
                 }
             } catch (e) {
-                console.warn('Meting API failed for ' + baseApi, e);
+                console.warn('Meting API failed for ' + urls[i], e);
             }
         }
         throw new Error('All Meting APIs failed');
+    }
+
+    async function fetchMetingData() {
+        if (!config.meting) return;
+        var m = config.meting;
+        state.playlist = await fetchMetingPlaylist(m.server, m.type, m.id);
     }
 
     // ── Lyrics ───────────────────────────────────────────────
@@ -344,13 +365,62 @@ const managerConfigStr = JSON.stringify({
         emit('fm:error', { message: state.error });
     });
 
+    // ── Playlist switching ──────────────────────────────────
+    async function switchPlaylist(playlistId) {
+        if (!playlistId) return;
+        var pl = (config.playlists || []).find(function (p) { return p.id === playlistId; });
+        if (!pl) { console.warn('Playlist not found:', playlistId); return; }
+
+        emit('fm:playlist-switching', { playlistId: playlistId, name: pl.name });
+
+        try {
+            var tracks = await fetchMetingPlaylist(pl.server || 'netease', pl.type || 'playlist', pl.id_meting);
+            state.playlist = tracks;
+            state.currentPlaylistId = playlistId;
+            state.currentIndex = 0;
+            loadTrack(0, true);
+            emit('fm:playlist-switched', {
+                playlistId: playlistId,
+                name: pl.name,
+                description: pl.description || '',
+                cover: pl.cover || (tracks.length > 0 ? tracks[0].pic : ''),
+                playlist: tracks
+            });
+        } catch (e) {
+            console.error('Playlist switch failed:', e);
+            emit('fm:playlist-switched', {
+                playlistId: playlistId,
+                name: pl.name,
+                error: true,
+                message: config.i18n.error
+            });
+        }
+    }
+
+    function getCurrentPlaylistId() { return state.currentPlaylistId; }
+
+    function getPlaylists() { return config.playlists || []; }
+
     // ── Init (idempotent) ────────────────────────────────────
     async function init() {
         if (state.initialized || state.initializing) return;
         state.initializing = true;
 
         try {
-            if (config.mode === 'meting' && config.meting) {
+            // 优先使用 playlists 中标记为 default 的歌单
+            var defaultPl = null;
+            if (config.playlists && config.playlists.length > 0) {
+                defaultPl = config.playlists.find(function (p) { return p.default; }) || config.playlists[0];
+            }
+
+            if (defaultPl && config.mode === 'meting') {
+                state.playlist = await fetchMetingPlaylist(
+                    defaultPl.server || 'netease',
+                    defaultPl.type || 'playlist',
+                    defaultPl.id_meting
+                );
+                state.currentPlaylistId = defaultPl.id;
+            } else if (config.mode === 'meting' && config.meting) {
                 await fetchMetingData();
             } else if (config.mode === 'local') {
                 state.playlist = config.localPlaylist || [];
@@ -371,7 +441,9 @@ const managerConfigStr = JSON.stringify({
                     playlist: state.playlist,
                     playMode: state.playMode,
                     volume: state.volume,
-                    isMuted: state.isMuted
+                    isMuted: state.isMuted,
+                    currentPlaylistId: state.currentPlaylistId,
+                    cover: state.playlist[0]?.pic || (defaultPl ? defaultPl.cover : '')
                 });
 
                 loadTrack(startIndex, false);
@@ -422,8 +494,18 @@ const managerConfigStr = JSON.stringify({
                 currentLrcIndex: state.currentLrcIndex,
                 initialized: state.initialized,
                 error: state.error,
-                config: config
+                config: config,
+                currentPlaylistId: state.currentPlaylistId
             };
+        },
+        switchPlaylist: switchPlaylist,
+        getCurrentPlaylistId: getCurrentPlaylistId,
+        getPlaylists: getPlaylists,
+        fetchCover: async function(server, type, id) {
+            try {
+                var tracks = await fetchMetingPlaylist(server || 'netease', type || 'playlist', id);
+                return tracks.length > 0 ? tracks[0].pic : '';
+            } catch(e) { return ''; }
         },
         togglePlay: togglePlay,
         playNext: function () { playNext(false); },

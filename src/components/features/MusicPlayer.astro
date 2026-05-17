@@ -494,6 +494,24 @@ const widgetId =
         }
     });
 
+    on('fm:playlist-switching', function () {
+        setLoading(true);
+        ui.playlistContainer.style.opacity = '0.5';
+        ui.playlistContainer.style.pointerEvents = 'none';
+    });
+
+    on('fm:playlist-switched', function (e) {
+        setLoading(false);
+        ui.playlistContainer.style.opacity = '';
+        ui.playlistContainer.style.pointerEvents = '';
+        if (e.detail.error) {
+            ui.title.innerText = e.detail.message || cfg.i18n.error;
+        } else if (e.detail.playlist && e.detail.playlist.length > 0) {
+            renderPlaylist(e.detail.playlist, 0);
+            ui.title.innerText = e.detail.name || '';
+        }
+    });
+
     on('fm:track', function (e) {
         var d = e.detail;
         updateTrackUI(d.track);
