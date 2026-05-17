@@ -11,9 +11,7 @@ category: 一些思考
 
 AI 浪潮下，我也只是被推着走的普通人。事到如今已经无法想象没有 AI 辅助的生活，如果没有 AI 降低了技术的门槛我也许不会有动力去做些什么东西，也不会有这个网站。
 
-<div style="max-width: 360px; margin: 1rem auto; text-align: center;">
-  <img src="../../assets/images/wallpapers/3305f1d9c34a95cbb16cd85c7a9d8e20.png" alt="插图" style="width: 100%; transform: rotate(-90deg); border-radius: 0.5rem;" />
-</div>
+<img src="/images/wallpapers/3305f1d9c34a95cbb16cd85c7a9d8e20.png" alt="插图" style="display: block; width: calc(100% - 0.5rem); margin: 1rem auto; border-radius: 0.5rem;" />
 
 很多人都会焦虑关于 AI 发展的事，而我也不例外，不过往好处想没有焦虑也就没有前进了。人力车夫会被出租车取代，技术的发展永远会造成这种"创造性破坏"，时代的发展却总不会因个人意志而动摇。
 
