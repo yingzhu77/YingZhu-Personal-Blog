@@ -38,3 +38,4 @@ cache/
 package/
 .obsidian/
 .playwright-mcp/
+.wrangler/
