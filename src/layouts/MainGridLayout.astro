@@ -127,7 +127,7 @@ const pickRandom = (val: string | string[]): string => {
 	return val;
 };
 // 为 sections 模式随机选取每组文案
-const resolvedSections = homeTextSections?.map(section => ({
+const resolvedSections = homeTextSections?.map((section) => ({
 	title: pickRandom(section.title),
 	subtitle: pickRandom(section.subtitle),
 }));

@@ -75,7 +75,8 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 		{
 			id: "yorushika-collection",
 			name: "ヨルシカ · 全专辑收录",
-			description: "だから僕は音楽を辞めた / エルマ / 盗作 / 幻燈 — 夜鹿经典全收录",
+			description:
+				"だから僕は音楽を辞めた / エルマ / 盗作 / 幻燈 — 夜鹿经典全收录",
 			cover: "",
 			server: "netease",
 			type: "playlist",

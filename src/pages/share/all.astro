@@ -1,7 +1,7 @@
 ---
 import { getImage } from "astro:assets";
-import { backgroundWallpaper } from "@/config";
 import AllImagesGallery from "@/components/pages/share/AllImagesGallery.svelte";
+import { backgroundWallpaper } from "@/config";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 
 const title = "全部壁纸";
@@ -9,39 +9,53 @@ const description = "浏览所有博客壁纸图片";
 
 // 直接扫描文件夹中所有图片（不依赖 config）
 const imageModules = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/images/wallpapers/*.{avif,webp,jpg,jpeg,png}",
+	"/src/assets/images/wallpapers/*.{avif,webp,jpg,jpeg,png}",
 );
 
 interface WallpaperData {
-  name: string;
-  hue: number;
-  desktopPath: string;
-  mobilePath: string;
-  thumbnailUrl: string;
-  fullUrl: string;
-  artist?: string;
+	name: string;
+	hue: number;
+	desktopPath: string;
+	mobilePath: string;
+	thumbnailUrl: string;
+	fullUrl: string;
+	artist?: string;
 }
 
 const hueMap = backgroundWallpaper.wallpaperHue?.imageHueMap ?? {};
 const wallpaperItems: WallpaperData[] = [];
 
 for (const [filePath, loader] of Object.entries(imageModules)) {
-  const fileName = filePath.split("/").pop()?.replace(/\.[^/.]+$/, "") ?? "";
-  if (!fileName) continue;
+	const fileName =
+		filePath
+			.split("/")
+			.pop()
+			?.replace(/\.[^/.]+$/, "") ?? "";
+	if (!fileName) continue;
 
-  const mod = await loader();
-  const img = mod.default;
-  const thumb = await getImage({ src: img, width: 480, format: "webp", quality: 80 });
-  const full = await getImage({ src: img, width: 1920, format: "webp", quality: 85 });
+	const mod = await loader();
+	const img = mod.default;
+	const thumb = await getImage({
+		src: img,
+		width: 480,
+		format: "webp",
+		quality: 80,
+	});
+	const full = await getImage({
+		src: img,
+		width: 1920,
+		format: "webp",
+		quality: 85,
+	});
 
-  wallpaperItems.push({
-    name: fileName,
-    hue: hueMap[fileName] ?? 250,
-    desktopPath: `assets/images/wallpapers/${filePath.split("/").pop()}`,
-    mobilePath: `assets/images/wallpapers/${filePath.split("/").pop()}`,
-    thumbnailUrl: thumb.src,
-    fullUrl: full.src,
-  });
+	wallpaperItems.push({
+		name: fileName,
+		hue: hueMap[fileName] ?? 250,
+		desktopPath: `assets/images/wallpapers/${filePath.split("/").pop()}`,
+		mobilePath: `assets/images/wallpapers/${filePath.split("/").pop()}`,
+		thumbnailUrl: thumb.src,
+		fullUrl: full.src,
+	});
 }
 ---
 

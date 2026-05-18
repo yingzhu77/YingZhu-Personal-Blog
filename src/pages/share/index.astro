@@ -1,11 +1,11 @@
 ---
 import { getImage } from "astro:assets";
-import { backgroundWallpaper } from "@/config";
-import { books } from "@/config/readingConfig";
-import { musicPlayerConfig } from "@/config/musicConfig";
-import WallpaperGallery from "@/components/pages/share/WallpaperGallery.svelte";
-import ReadingGallery from "@/components/pages/share/ReadingGallery.svelte";
 import PlaylistPicker from "@/components/pages/share/PlaylistPicker.svelte";
+import ReadingGallery from "@/components/pages/share/ReadingGallery.svelte";
+import WallpaperGallery from "@/components/pages/share/WallpaperGallery.svelte";
+import { backgroundWallpaper } from "@/config";
+import { musicPlayerConfig } from "@/config/musicConfig";
+import { books } from "@/config/readingConfig";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
@@ -19,38 +19,64 @@ let desktopImages: string[] = [];
 let mobileImages: string[] = [];
 
 if (typeof rawSrc === "string") {
-  desktopImages = [rawSrc]; mobileImages = [rawSrc];
+	desktopImages = [rawSrc];
+	mobileImages = [rawSrc];
 } else if (Array.isArray(rawSrc)) {
-  desktopImages = rawSrc; mobileImages = rawSrc;
+	desktopImages = rawSrc;
+	mobileImages = rawSrc;
 } else {
-  const d = rawSrc.desktop; const m = rawSrc.mobile;
-  desktopImages = Array.isArray(d) ? d : d ? [d] : [];
-  mobileImages = Array.isArray(m) ? m : m ? [m] : [];
+	const d = rawSrc.desktop;
+	const m = rawSrc.mobile;
+	desktopImages = Array.isArray(d) ? d : d ? [d] : [];
+	mobileImages = Array.isArray(m) ? m : m ? [m] : [];
 }
 
 const imageModules = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/images/wallpapers/*.{avif,webp,jpg,jpeg,png}",
+	"/src/assets/images/wallpapers/*.{avif,webp,jpg,jpeg,png}",
 );
 
 interface WallpaperData {
-  name: string; hue: number; desktopPath: string; mobilePath: string;
-  thumbnailUrl: string; fullUrl: string; artist?: string;
+	name: string;
+	hue: number;
+	desktopPath: string;
+	mobilePath: string;
+	thumbnailUrl: string;
+	fullUrl: string;
+	artist?: string;
 }
 
 const wallpaperItems: WallpaperData[] = [];
 for (let i = 0; i < desktopImages.length; i++) {
-  const imgPath = desktopImages[i];
-  const fileName = imgPath.split("/").pop()?.replace(/\.[^/.]+$/, "") ?? `wp-${i}`;
-  const hueMap = backgroundWallpaper.wallpaperHue?.imageHueMap ?? {};
-  const globKey = Object.keys(imageModules).find((key) => key.includes(fileName));
-  let thumbnailUrl = "", fullUrl = "";
-  if (globKey) {
-    const mod = await imageModules[globKey]();
-    const img = mod.default;
-    thumbnailUrl = (await getImage({ src: img, width: 320, format: "webp", quality: 75 })).src;
-    fullUrl = (await getImage({ src: img, width: 1920, format: "webp", quality: 85 })).src;
-  }
-  wallpaperItems.push({ name: fileName, hue: hueMap[fileName] ?? 250, desktopPath: desktopImages[i], mobilePath: mobileImages[i] ?? "", thumbnailUrl, fullUrl });
+	const imgPath = desktopImages[i];
+	const fileName =
+		imgPath
+			.split("/")
+			.pop()
+			?.replace(/\.[^/.]+$/, "") ?? `wp-${i}`;
+	const hueMap = backgroundWallpaper.wallpaperHue?.imageHueMap ?? {};
+	const globKey = Object.keys(imageModules).find((key) =>
+		key.includes(fileName),
+	);
+	let thumbnailUrl = "";
+	let fullUrl = "";
+	if (globKey) {
+		const mod = await imageModules[globKey]();
+		const img = mod.default;
+		thumbnailUrl = (
+			await getImage({ src: img, width: 320, format: "webp", quality: 75 })
+		).src;
+		fullUrl = (
+			await getImage({ src: img, width: 1920, format: "webp", quality: 85 })
+		).src;
+	}
+	wallpaperItems.push({
+		name: fileName,
+		hue: hueMap[fileName] ?? 250,
+		desktopPath: desktopImages[i],
+		mobilePath: mobileImages[i] ?? "",
+		thumbnailUrl,
+		fullUrl,
+	});
 }
 
 // --- 音乐数据 ---

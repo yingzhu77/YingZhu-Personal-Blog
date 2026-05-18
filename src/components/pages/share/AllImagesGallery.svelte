@@ -1,97 +1,137 @@
 <script lang="ts">
-  import { tick } from "svelte";
-  import Icon from "@/components/common/Icon.svelte";
+import { tick } from "svelte";
+import Icon from "@/components/common/Icon.svelte";
 
-  interface WallpaperData {
-    name: string; hue: number; desktopPath: string; mobilePath: string;
-    thumbnailUrl: string; fullUrl: string; artist?: string;
-  }
+interface WallpaperData {
+	name: string;
+	hue: number;
+	desktopPath: string;
+	mobilePath: string;
+	thumbnailUrl: string;
+	fullUrl: string;
+	artist?: string;
+}
 
-  let { wallpapers = [] }: { wallpapers: WallpaperData[] } = $props();
-  let lightboxItem: WallpaperData | null = $state(null);
-  let imagesLoaded: Record<string, boolean> = $state({});
-  let zoom = $state(1); let panX = $state(0); let panY = $state(0);
-  let isDragging = $state(false); let dsx = 0; let dsy = 0; let psx = 0; let psy = 0;
-  let isCurrent: Record<string, boolean> = $state({});
-  const Z_MAX = 5; const Z_MIN = 1; const Z_STEP = 0.5;
+let { wallpapers = [] }: { wallpapers: WallpaperData[] } = $props();
+let lightboxItem: WallpaperData | null = $state(null);
+let imagesLoaded: Record<string, boolean> = $state({});
+let zoom = $state(1);
+let panX = $state(0);
+let panY = $state(0);
+let isDragging = $state(false);
+let dsx = 0;
+let dsy = 0;
+let psx = 0;
+let psy = 0;
+let isCurrent: Record<string, boolean> = $state({});
+const Z_MAX = 5;
+const Z_MIN = 1;
+const Z_STEP = 0.5;
 
-  function onImageLoad(name: string) { imagesLoaded[name] = true; }
+function onImageLoad(name: string) {
+	imagesLoaded[name] = true;
+}
 
-  // 检测当前壁纸
-  function checkCurrentWallpaper(name: string): boolean {
-    if (typeof window.__bannerDynamicWallpaper !== "undefined") {
-      return window.__bannerDynamicWallpaper.name === name;
-    }
-    if (typeof window.__bannerRandomIndex === "undefined") return false;
-    const container = document.getElementById("banner-images-container");
-    if (!container) return false;
-    const isDesktop = window.innerWidth >= 1024;
-    try {
-      const namesJson = isDesktop ? container.dataset.desktopImageNames : container.dataset.mobileImageNames;
-      if (!namesJson) return false;
-      const names = JSON.parse(namesJson);
-      const currentIdx = isDesktop ? window.__bannerRandomIndex.desktop : window.__bannerRandomIndex.mobile;
-      if (currentIdx === -1) return false;
-      return names[currentIdx] === name;
-    } catch { return false; }
-  }
+// 检测当前壁纸
+function checkCurrentWallpaper(name: string): boolean {
+	if (typeof window.__bannerDynamicWallpaper !== "undefined") {
+		return window.__bannerDynamicWallpaper.name === name;
+	}
+	if (typeof window.__bannerRandomIndex === "undefined") return false;
+	const container = document.getElementById("banner-images-container");
+	if (!container) return false;
+	const isDesktop = window.innerWidth >= 1024;
+	try {
+		const namesJson = isDesktop
+			? container.dataset.desktopImageNames
+			: container.dataset.mobileImageNames;
+		if (!namesJson) return false;
+		const names = JSON.parse(namesJson);
+		const currentIdx = isDesktop
+			? window.__bannerRandomIndex.desktop
+			: window.__bannerRandomIndex.mobile;
+		if (currentIdx === -1) return false;
+		return names[currentIdx] === name;
+	} catch {
+		return false;
+	}
+}
 
-  // 定期刷新当前壁纸状态
-  $effect(() => {
-    const interval = setInterval(() => {
-      const newCurrent: Record<string, boolean> = {};
-      for (const w of wallpapers) {
-        newCurrent[w.name] = checkCurrentWallpaper(w.name);
-      }
-      isCurrent = newCurrent;
-    }, 1000);
-    return () => clearInterval(interval);
-  });
+// 定期刷新当前壁纸状态
+$effect(() => {
+	const interval = setInterval(() => {
+		const newCurrent: Record<string, boolean> = {};
+		for (const w of wallpapers) {
+			newCurrent[w.name] = checkCurrentWallpaper(w.name);
+		}
+		isCurrent = newCurrent;
+	}, 1000);
+	return () => clearInterval(interval);
+});
 
-  // 初始检测
-  $effect(() => {
-    const newCurrent: Record<string, boolean> = {};
-    for (const w of wallpapers) {
-      newCurrent[w.name] = checkCurrentWallpaper(w.name);
-    }
-    isCurrent = newCurrent;
-  });
+// 初始检测
+$effect(() => {
+	const newCurrent: Record<string, boolean> = {};
+	for (const w of wallpapers) {
+		newCurrent[w.name] = checkCurrentWallpaper(w.name);
+	}
+	isCurrent = newCurrent;
+});
 
-  $effect(() => { return () => { document.body.style.overflow = ""; }; });
+$effect(() => {
+	return () => {
+		document.body.style.overflow = "";
+	};
+});
 
-  function setAsCurrent(item: WallpaperData) {
-    // 尝试按名称切换（配置壁纸走模板优化）
-    const container = document.getElementById("banner-images-container");
-    if (container) {
-      try {
-        const dNames = JSON.parse(container.dataset.desktopImageNames || "[]");
-        const mNames = JSON.parse(container.dataset.mobileImageNames || "[]");
-        if (dNames.includes(item.name) || mNames.includes(item.name)) {
-          window.dispatchEvent(new CustomEvent("setSpecificWallpaper", { detail: { name: item.name } }));
-          return;
-        }
-      } catch { /* fallback */ }
-    }
-    // 非配置壁纸走 URL 动态切换
-    window.dispatchEvent(new CustomEvent("setSpecificWallpaperByUrl", {
-      detail: { url: item.fullUrl, name: item.name, hue: item.hue }
-    }));
-  }
+function setAsCurrent(item: WallpaperData) {
+	// 尝试按名称切换（配置壁纸走模板优化）
+	const container = document.getElementById("banner-images-container");
+	if (container) {
+		try {
+			const dNames = JSON.parse(container.dataset.desktopImageNames || "[]");
+			const mNames = JSON.parse(container.dataset.mobileImageNames || "[]");
+			if (dNames.includes(item.name) || mNames.includes(item.name)) {
+				window.dispatchEvent(
+					new CustomEvent("setSpecificWallpaper", {
+						detail: { name: item.name },
+					}),
+				);
+				return;
+			}
+		} catch {
+			/* fallback */
+		}
+	}
+	// 非配置壁纸走 URL 动态切换
+	window.dispatchEvent(
+		new CustomEvent("setSpecificWallpaperByUrl", {
+			detail: { url: item.fullUrl, name: item.name, hue: item.hue },
+		}),
+	);
+}
 
-  function openLightbox(item: WallpaperData) {
-    lightboxItem = item; zoom = 1; panX = 0; panY = 0;
-    document.body.style.overflow = "hidden";
-  }
-  function closeLightbox() { lightboxItem = null; document.body.style.overflow = ""; }
+function openLightbox(item: WallpaperData) {
+	lightboxItem = item;
+	zoom = 1;
+	panX = 0;
+	panY = 0;
+	document.body.style.overflow = "hidden";
+}
+function closeLightbox() {
+	lightboxItem = null;
+	document.body.style.overflow = "";
+}
 
-  $effect(() => {
-    if (lightboxItem) {
-      tick().then(() => {
-        const el = document.querySelector('.lb-backdrop');
-        if (el && el.parentElement !== document.body) document.body.appendChild(el);
-      });
-    }
-  });
+$effect(() => {
+	if (lightboxItem) {
+		tick().then(() => {
+			const el = document.querySelector(".lb-backdrop");
+			if (el && el.parentElement !== document.body)
+				document.body.appendChild(el);
+		});
+	}
+});
 </script>
 
 <svelte:window onkeydown={(e) => { if (e.key === "Escape") closeLightbox(); }} />

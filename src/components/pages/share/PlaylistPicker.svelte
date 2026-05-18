@@ -1,83 +1,107 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import Icon from "@/components/common/Icon.svelte";
+import { onMount } from "svelte";
+import Icon from "@/components/common/Icon.svelte";
 
-  interface PlaylistCardData {
-    id: string;
-    name: string;
-    description: string;
-    cover: string;
-    server: string;
-    type: string;
-    id_meting: string;
-    default: boolean;
-  }
+interface PlaylistCardData {
+	id: string;
+	name: string;
+	description: string;
+	cover: string;
+	server: string;
+	type: string;
+	id_meting: string;
+	default: boolean;
+}
 
-  let { playlists = [] }: { playlists: PlaylistCardData[] } = $props();
+let { playlists = [] }: { playlists: PlaylistCardData[] } = $props();
 
-  let activeId: string | null = $state(null);
-  let switchingId: string | null = $state(null);
-  let covers: Record<string, string> = $state({});
-  let isPlaying = $state(false);
+let activeId: string | null = $state(null);
+let switchingId: string | null = $state(null);
+let covers: Record<string, string> = $state({});
+let isPlaying = $state(false);
 
-  onMount(() => {
-    if (typeof window === "undefined") return;
-    if (window.__fireflyMusic) {
-      const state = window.__fireflyMusic.getState();
-      activeId = state.currentPlaylistId;
-      isPlaying = state.isPlaying;
-      if (state.playlist?.[0]?.pic) {
-        covers[state.currentPlaylistId] = state.playlist[0].pic;
-      }
+onMount(() => {
+	if (typeof window === "undefined") return;
+	if (window.__fireflyMusic) {
+		const state = window.__fireflyMusic.getState();
+		activeId = state.currentPlaylistId;
+		isPlaying = state.isPlaying;
+		if (state.playlist?.[0]?.pic) {
+			covers[state.currentPlaylistId] = state.playlist[0].pic;
+		}
 
-      const onInit = (e: CustomEvent) => {
-        if (e.detail.currentPlaylistId) activeId = e.detail.currentPlaylistId;
-        if (e.detail.cover) covers[e.detail.currentPlaylistId || activeId] = e.detail.cover;
-      };
-      const onSwitched = (e: CustomEvent) => {
-        switchingId = null;
-        if (e.detail.playlistId) {
-          activeId = e.detail.playlistId;
-          if (e.detail.cover) covers[e.detail.playlistId] = e.detail.cover;
-        }
-      };
-      const onSwitching = (e: CustomEvent) => { switchingId = e.detail.playlistId; };
-      const onPlayState = (e: CustomEvent) => { isPlaying = e.detail.isPlaying; };
+		const onInit = (e: CustomEvent) => {
+			if (e.detail.currentPlaylistId) activeId = e.detail.currentPlaylistId;
+			if (e.detail.cover)
+				covers[e.detail.currentPlaylistId || activeId] = e.detail.cover;
+		};
+		const onSwitched = (e: CustomEvent) => {
+			switchingId = null;
+			if (e.detail.playlistId) {
+				activeId = e.detail.playlistId;
+				if (e.detail.cover) covers[e.detail.playlistId] = e.detail.cover;
+			}
+		};
+		const onSwitching = (e: CustomEvent) => {
+			switchingId = e.detail.playlistId;
+		};
+		const onPlayState = (e: CustomEvent) => {
+			isPlaying = e.detail.isPlaying;
+		};
 
-      window.addEventListener("fm:init", onInit as EventListener);
-      window.addEventListener("fm:playlist-switched", onSwitched as EventListener);
-      window.addEventListener("fm:playlist-switching", onSwitching as EventListener);
-      window.addEventListener("fm:play-state", onPlayState as EventListener);
+		window.addEventListener("fm:init", onInit as EventListener);
+		window.addEventListener(
+			"fm:playlist-switched",
+			onSwitched as EventListener,
+		);
+		window.addEventListener(
+			"fm:playlist-switching",
+			onSwitching as EventListener,
+		);
+		window.addEventListener("fm:play-state", onPlayState as EventListener);
 
-      // 后台预加载非活跃歌单封面（每 600ms 一个，不阻塞首屏）
-      const otherPls = playlists.filter(p => p.id !== activeId);
-      let delay = 0;
-      for (const pl of otherPls) {
-        delay += 600;
-        setTimeout(async () => {
-          if (covers[pl.id] || typeof window === "undefined" || !window.__fireflyMusic) return;
-          const pic = await window.__fireflyMusic.fetchCover(pl.server, pl.type, pl.id_meting);
-          if (pic) covers[pl.id] = pic;
-        }, delay);
-      }
-    }
-  });
+		// 后台预加载非活跃歌单封面（每 600ms 一个，不阻塞首屏）
+		const otherPls = playlists.filter((p) => p.id !== activeId);
+		let delay = 0;
+		for (const pl of otherPls) {
+			delay += 600;
+			setTimeout(async () => {
+				if (
+					covers[pl.id] ||
+					typeof window === "undefined" ||
+					!window.__fireflyMusic
+				)
+					return;
+				const pic = await window.__fireflyMusic.fetchCover(
+					pl.server,
+					pl.type,
+					pl.id_meting,
+				);
+				if (pic) covers[pl.id] = pic;
+			}, delay);
+		}
+	}
+});
 
-  function switchTo(pl: PlaylistCardData) {
-    if (typeof window === "undefined" || !window.__fireflyMusic || switchingId) return;
-    if (activeId === pl.id) return;
-    window.__fireflyMusic.switchPlaylist(pl.id);
-  }
+function switchTo(pl: PlaylistCardData) {
+	if (typeof window === "undefined" || !window.__fireflyMusic || switchingId)
+		return;
+	if (activeId === pl.id) return;
+	window.__fireflyMusic.switchPlaylist(pl.id);
+}
 
-  function coverSrc(pl: PlaylistCardData): string {
-    if (covers[pl.id]) return covers[pl.id];
-    if (pl.cover) return pl.cover;
-    return "";
-  }
+function coverSrc(pl: PlaylistCardData): string {
+	if (covers[pl.id]) return covers[pl.id];
+	if (pl.cover) return pl.cover;
+	return "";
+}
 
-  function handleKeydown(e: KeyboardEvent, pl: PlaylistCardData) {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); switchTo(pl); }
-  }
+function handleKeydown(e: KeyboardEvent, pl: PlaylistCardData) {
+	if (e.key === "Enter" || e.key === " ") {
+		e.preventDefault();
+		switchTo(pl);
+	}
+}
 </script>
 
 <div class="playlist-picker">

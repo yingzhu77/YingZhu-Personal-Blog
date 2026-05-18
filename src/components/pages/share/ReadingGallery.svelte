@@ -1,40 +1,41 @@
 <script lang="ts">
-  import { tick } from "svelte";
-  import Icon from "@/components/common/Icon.svelte";
+import { tick } from "svelte";
+import Icon from "@/components/common/Icon.svelte";
 
-  interface BookItem {
-    title: string;
-    author: string;
-    cover: string;
-    review: string;
-    link?: string;
-  }
+interface BookItem {
+	title: string;
+	author: string;
+	cover: string;
+	review: string;
+	link?: string;
+}
 
-  let { books = [] }: { books: BookItem[] } = $props();
-  let selectedBook: BookItem | null = $state(null);
+let { books = [] }: { books: BookItem[] } = $props();
+let selectedBook: BookItem | null = $state(null);
 
-  function openDetail(book: BookItem) {
-    selectedBook = book;
-    document.body.style.overflow = "hidden";
-  }
+function openDetail(book: BookItem) {
+	selectedBook = book;
+	document.body.style.overflow = "hidden";
+}
 
-  function closeDetail() {
-    selectedBook = null;
-    document.body.style.overflow = "";
-  }
+function closeDetail() {
+	selectedBook = null;
+	document.body.style.overflow = "";
+}
 
-  $effect(() => {
-    if (selectedBook) {
-      tick().then(() => {
-        const el = document.querySelector('.detail-backdrop');
-        if (el && el.parentElement !== document.body) document.body.appendChild(el);
-      });
-    }
-  });
+$effect(() => {
+	if (selectedBook) {
+		tick().then(() => {
+			const el = document.querySelector(".detail-backdrop");
+			if (el && el.parentElement !== document.body)
+				document.body.appendChild(el);
+		});
+	}
+});
 
-  function handleKeydown(e: KeyboardEvent) {
-    if (e.key === "Escape") closeDetail();
-  }
+function handleKeydown(e: KeyboardEvent) {
+	if (e.key === "Escape") closeDetail();
+}
 </script>
 
 <svelte:window onkeydown={handleKeydown} />

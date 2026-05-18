@@ -1,259 +1,308 @@
 <script lang="ts">
-  import { tick } from "svelte";
-  import Icon from "@/components/common/Icon.svelte";
+import { tick } from "svelte";
+import Icon from "@/components/common/Icon.svelte";
 
-  interface WallpaperData {
-    name: string;
-    hue: number;
-    desktopPath: string;
-    mobilePath: string;
-    thumbnailUrl: string;
-    fullUrl: string;
-    artist?: string;
-  }
+interface WallpaperData {
+	name: string;
+	hue: number;
+	desktopPath: string;
+	mobilePath: string;
+	thumbnailUrl: string;
+	fullUrl: string;
+	artist?: string;
+}
 
-  let { wallpapers = [] }: { wallpapers: WallpaperData[] } = $props();
+let { wallpapers = [] }: { wallpapers: WallpaperData[] } = $props();
 
-  let pool: string[] = $state([]);
-  let lightboxImage: WallpaperData | null = $state(null);
-  let initialized = $state(false);
-  let imagesLoaded: Record<string, boolean> = $state({});
-  let isCurrent: Record<string, boolean> = $state({});
-  const POOL_MAX = 6;
+let pool: string[] = $state([]);
+let lightboxImage: WallpaperData | null = $state(null);
+let initialized = $state(false);
+let imagesLoaded: Record<string, boolean> = $state({});
+let isCurrent: Record<string, boolean> = $state({});
+const POOL_MAX = 6;
 
-  // Lightbox zoom & pan state
-  let zoom = $state(1);
-  let panX = $state(0);
-  let panY = $state(0);
-  let isDragging = $state(false);
-  let dragStartX = 0;
-  let dragStartY = 0;
-  let panStartX = 0;
-  let panStartY = 0;
-  const ZOOM_MIN = 1;
-  const ZOOM_MAX = 5;
-  const ZOOM_STEP = 0.5;
-  const DRAG_THRESHOLD = 5;
+// Lightbox zoom & pan state
+let zoom = $state(1);
+let panX = $state(0);
+let panY = $state(0);
+let isDragging = $state(false);
+let dragStartX = 0;
+let dragStartY = 0;
+let panStartX = 0;
+let panStartY = 0;
+const ZOOM_MIN = 1;
+const ZOOM_MAX = 5;
+const ZOOM_STEP = 0.5;
+const DRAG_THRESHOLD = 5;
 
-  // 图片加载完成回调
-  function onImageLoad(name: string) {
-    imagesLoaded[name] = true;
-  }
+// 图片加载完成回调
+function onImageLoad(name: string) {
+	imagesLoaded[name] = true;
+}
 
-  // 检测当前壁纸
-  function checkCurrentWallpaper(name: string): boolean {
-    if (typeof window.__bannerDynamicWallpaper !== "undefined") {
-      return window.__bannerDynamicWallpaper.name === name;
-    }
-    if (typeof window.__bannerRandomIndex === "undefined") return false;
-    const container = document.getElementById("banner-images-container");
-    if (!container) return false;
-    const isDesktop = window.innerWidth >= 1024;
-    try {
-      const namesJson = isDesktop ? container.dataset.desktopImageNames : container.dataset.mobileImageNames;
-      if (!namesJson) return false;
-      const names = JSON.parse(namesJson);
-      const currentIdx = isDesktop ? window.__bannerRandomIndex.desktop : window.__bannerRandomIndex.mobile;
-      if (currentIdx === -1) return false;
-      return names[currentIdx] === name;
-    } catch { return false; }
-  }
+// 检测当前壁纸
+function checkCurrentWallpaper(name: string): boolean {
+	if (typeof window.__bannerDynamicWallpaper !== "undefined") {
+		return window.__bannerDynamicWallpaper.name === name;
+	}
+	if (typeof window.__bannerRandomIndex === "undefined") return false;
+	const container = document.getElementById("banner-images-container");
+	if (!container) return false;
+	const isDesktop = window.innerWidth >= 1024;
+	try {
+		const namesJson = isDesktop
+			? container.dataset.desktopImageNames
+			: container.dataset.mobileImageNames;
+		if (!namesJson) return false;
+		const names = JSON.parse(namesJson);
+		const currentIdx = isDesktop
+			? window.__bannerRandomIndex.desktop
+			: window.__bannerRandomIndex.mobile;
+		if (currentIdx === -1) return false;
+		return names[currentIdx] === name;
+	} catch {
+		return false;
+	}
+}
 
-  // 定期刷新当前壁纸状态
-  $effect(() => {
-    const interval = setInterval(() => {
-      const newCurrent: Record<string, boolean> = {};
-      for (const w of wallpapers) {
-        newCurrent[w.name] = checkCurrentWallpaper(w.name);
-      }
-      isCurrent = newCurrent;
-    }, 1000);
-    return () => clearInterval(interval);
-  });
+// 定期刷新当前壁纸状态
+$effect(() => {
+	const interval = setInterval(() => {
+		const newCurrent: Record<string, boolean> = {};
+		for (const w of wallpapers) {
+			newCurrent[w.name] = checkCurrentWallpaper(w.name);
+		}
+		isCurrent = newCurrent;
+	}, 1000);
+	return () => clearInterval(interval);
+});
 
-  // 初始检测
-  $effect(() => {
-    const newCurrent: Record<string, boolean> = {};
-    for (const w of wallpapers) {
-      newCurrent[w.name] = checkCurrentWallpaper(w.name);
-    }
-    isCurrent = newCurrent;
-  });
+// 初始检测
+$effect(() => {
+	const newCurrent: Record<string, boolean> = {};
+	for (const w of wallpapers) {
+		newCurrent[w.name] = checkCurrentWallpaper(w.name);
+	}
+	isCurrent = newCurrent;
+});
 
-  // 设为当前壁纸
-  function setAsCurrent(item: WallpaperData) {
-    window.dispatchEvent(new CustomEvent("setSpecificWallpaper", { detail: { name: item.name } }));
-  }
+// 设为当前壁纸
+function setAsCurrent(item: WallpaperData) {
+	window.dispatchEvent(
+		new CustomEvent("setSpecificWallpaper", { detail: { name: item.name } }),
+	);
+}
 
-  // 初始化：从 localStorage 读取或默认全选
-  $effect(() => {
-    if (initialized) return;
-    try {
-      const stored = localStorage.getItem("wallpaperPool");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          const validNames = wallpapers.map((w) => w.name);
-          pool = parsed.filter((n: string) => validNames.includes(n));
-        }
-      }
-    } catch {
-      // 忽略
-    }
-    if (pool.length === 0) {
-      pool = wallpapers.slice(0, POOL_MAX).map((w) => w.name);
-    }
-    initialized = true;
-  });
+// 初始化：从 localStorage 读取或默认全选
+$effect(() => {
+	if (initialized) return;
+	try {
+		const stored = localStorage.getItem("wallpaperPool");
+		if (stored) {
+			const parsed = JSON.parse(stored);
+			if (Array.isArray(parsed) && parsed.length > 0) {
+				const validNames = wallpapers.map((w) => w.name);
+				pool = parsed.filter((n: string) => validNames.includes(n));
+			}
+		}
+	} catch {
+		// 忽略
+	}
+	if (pool.length === 0) {
+		pool = wallpapers.slice(0, POOL_MAX).map((w) => w.name);
+	}
+	initialized = true;
+});
 
-  // 同步到 localStorage
-  $effect(() => {
-    if (!initialized) return;
-    try {
-      localStorage.setItem("wallpaperPool", JSON.stringify(pool));
-    } catch {
-      // 忽略
-    }
-  });
+// 同步到 localStorage
+$effect(() => {
+	if (!initialized) return;
+	try {
+		localStorage.setItem("wallpaperPool", JSON.stringify(pool));
+	} catch {
+		// 忽略
+	}
+});
 
-  // 组件销毁时恢复 body 滚动
-  $effect(() => {
-    return () => {
-      document.body.style.overflow = "";
-    };
-  });
+// 组件销毁时恢复 body 滚动
+$effect(() => {
+	return () => {
+		document.body.style.overflow = "";
+	};
+});
 
-  function toggle(name: string) {
-    if (pool.includes(name)) {
-      if (pool.length <= 1) return;
-      pool = pool.filter((n) => n !== name);
-      // 如果移除的正是当前显示的壁纸，立即随机切换到池中另一张
-      if (isCurrentWallpaper(name)) {
-        window.dispatchEvent(new CustomEvent("randomWallpaper"));
-      }
-    } else {
-      if (pool.length >= POOL_MAX) {
-        // 池满时自动替换最旧项（FIFO）
-        pool = [...pool.slice(1), name];
-      } else {
-        pool = [...pool, name];
-      }
-      // 加入池后立即切换到该壁纸
-      window.dispatchEvent(new CustomEvent("setSpecificWallpaper", { detail: { name } }));
-    }
-  }
+function toggle(name: string) {
+	if (pool.includes(name)) {
+		if (pool.length <= 1) return;
+		pool = pool.filter((n) => n !== name);
+		// 如果移除的正是当前显示的壁纸，立即随机切换到池中另一张
+		if (isCurrentWallpaper(name)) {
+			window.dispatchEvent(new CustomEvent("randomWallpaper"));
+		}
+	} else {
+		if (pool.length >= POOL_MAX) {
+			// 池满时自动替换最旧项（FIFO）
+			pool = [...pool.slice(1), name];
+		} else {
+			pool = [...pool, name];
+		}
+		// 加入池后立即切换到该壁纸
+		window.dispatchEvent(
+			new CustomEvent("setSpecificWallpaper", { detail: { name } }),
+		);
+	}
+}
 
-  // 判断指定壁纸是否是当前正在显示的壁纸
-  function isCurrentWallpaper(name: string): boolean {
-    if (typeof window.__bannerRandomIndex === "undefined") return false;
-    const container = document.getElementById("banner-images-container");
-    if (!container) return false;
-    const isDesktop = window.innerWidth >= 1024;
-    try {
-      const namesJson = isDesktop ? container.dataset.desktopImageNames : container.dataset.mobileImageNames;
-      if (!namesJson) return false;
-      const names = JSON.parse(namesJson);
-      const currentIdx = isDesktop ? window.__bannerRandomIndex.desktop : window.__bannerRandomIndex.mobile;
-      return names[currentIdx] === name;
-    } catch {
-      return false;
-    }
-  }
+// 判断指定壁纸是否是当前正在显示的壁纸
+function isCurrentWallpaper(name: string): boolean {
+	if (typeof window.__bannerRandomIndex === "undefined") return false;
+	const container = document.getElementById("banner-images-container");
+	if (!container) return false;
+	const isDesktop = window.innerWidth >= 1024;
+	try {
+		const namesJson = isDesktop
+			? container.dataset.desktopImageNames
+			: container.dataset.mobileImageNames;
+		if (!namesJson) return false;
+		const names = JSON.parse(namesJson);
+		const currentIdx = isDesktop
+			? window.__bannerRandomIndex.desktop
+			: window.__bannerRandomIndex.mobile;
+		return names[currentIdx] === name;
+	} catch {
+		return false;
+	}
+}
 
-  function isInPool(name: string): boolean {
-    return pool.includes(name);
-  }
+function isInPool(name: string): boolean {
+	return pool.includes(name);
+}
 
-  function closeLightbox() {
-    lightboxImage = null;
-    document.body.style.overflow = "";
-  }
+function closeLightbox() {
+	lightboxImage = null;
+	document.body.style.overflow = "";
+}
 
-  // 将灯箱 DOM 提升到 body 级别，避免祖级 CSS transform 破坏 position:fixed 定位
-  $effect(() => {
-    if (lightboxImage) {
-      tick().then(() => {
-        const backdrop = document.querySelector('.lightbox-backdrop');
-        if (backdrop && backdrop.parentElement !== document.body) {
-          document.body.appendChild(backdrop);
-        }
-      });
-    }
-  });
+// 将灯箱 DOM 提升到 body 级别，避免祖级 CSS transform 破坏 position:fixed 定位
+$effect(() => {
+	if (lightboxImage) {
+		tick().then(() => {
+			const backdrop = document.querySelector(".lightbox-backdrop");
+			if (backdrop && backdrop.parentElement !== document.body) {
+				document.body.appendChild(backdrop);
+			}
+		});
+	}
+});
 
-  function handleKeydown(e: KeyboardEvent) {
-    if (e.key === "Escape") { closeLightbox(); }
-  }
+function handleKeydown(e: KeyboardEvent) {
+	if (e.key === "Escape") {
+		closeLightbox();
+	}
+}
 
-  function keyHandler(e: KeyboardEvent) {
-    if (e.key === "Escape") { closeLightbox(); return; }
-    if (e.key === "+" || e.key === "=") { zoomIn(); return; }
-    if (e.key === "-") { zoomOut(); return; }
-    if (e.key === "0") { resetZoom(); return; }
-    if (e.key === "ArrowLeft") { panX = Math.max(panX - 40, -(zoom - 1) * 300); }
-    if (e.key === "ArrowRight") { panX = Math.min(panX + 40, (zoom - 1) * 300); }
-    if (e.key === "ArrowUp") { panY = Math.max(panY - 40, -(zoom - 1) * 300); }
-    if (e.key === "ArrowDown") { panY = Math.min(panY + 40, (zoom - 1) * 300); }
-  }
+function keyHandler(e: KeyboardEvent) {
+	if (e.key === "Escape") {
+		closeLightbox();
+		return;
+	}
+	if (e.key === "+" || e.key === "=") {
+		zoomIn();
+		return;
+	}
+	if (e.key === "-") {
+		zoomOut();
+		return;
+	}
+	if (e.key === "0") {
+		resetZoom();
+		return;
+	}
+	if (e.key === "ArrowLeft") {
+		panX = Math.max(panX - 40, -(zoom - 1) * 300);
+	}
+	if (e.key === "ArrowRight") {
+		panX = Math.min(panX + 40, (zoom - 1) * 300);
+	}
+	if (e.key === "ArrowUp") {
+		panY = Math.max(panY - 40, -(zoom - 1) * 300);
+	}
+	if (e.key === "ArrowDown") {
+		panY = Math.min(panY + 40, (zoom - 1) * 300);
+	}
+}
 
-  function zoomIn() { setZoom(Math.min(zoom + ZOOM_STEP, ZOOM_MAX)); }
-  function zoomOut() { setZoom(Math.max(zoom - ZOOM_STEP, ZOOM_MIN)); }
-  function resetZoom() { zoom = ZOOM_MIN; panX = 0; panY = 0; }
+function zoomIn() {
+	setZoom(Math.min(zoom + ZOOM_STEP, ZOOM_MAX));
+}
+function zoomOut() {
+	setZoom(Math.max(zoom - ZOOM_STEP, ZOOM_MIN));
+}
+function resetZoom() {
+	zoom = ZOOM_MIN;
+	panX = 0;
+	panY = 0;
+}
 
-  function setZoom(newZoom: number) {
-    if (newZoom === ZOOM_MIN) { panX = 0; panY = 0; }
-    zoom = newZoom;
-  }
+function setZoom(newZoom: number) {
+	if (newZoom === ZOOM_MIN) {
+		panX = 0;
+		panY = 0;
+	}
+	zoom = newZoom;
+}
 
-  // Drag handlers (mouse)
-  function startDrag(e: MouseEvent) {
-    if (zoom <= 1) return;
-    e.preventDefault();
-    isDragging = true;
-    dragStartX = e.clientX;
-    dragStartY = e.clientY;
-    panStartX = panX;
-    panStartY = panY;
-  }
+// Drag handlers (mouse)
+function startDrag(e: MouseEvent) {
+	if (zoom <= 1) return;
+	e.preventDefault();
+	isDragging = true;
+	dragStartX = e.clientX;
+	dragStartY = e.clientY;
+	panStartX = panX;
+	panStartY = panY;
+}
 
-  function doDrag(e: MouseEvent) {
-    if (!isDragging) return;
-    const dx = e.clientX - dragStartX;
-    const dy = e.clientY - dragStartY;
-    if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
-    panX = panStartX + dx;
-    panY = panStartY + dy;
-  }
+function doDrag(e: MouseEvent) {
+	if (!isDragging) return;
+	const dx = e.clientX - dragStartX;
+	const dy = e.clientY - dragStartY;
+	if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
+	panX = panStartX + dx;
+	panY = panStartY + dy;
+}
 
-  function endDrag() { isDragging = false; }
+function endDrag() {
+	isDragging = false;
+}
 
-  // Drag handlers (touch)
-  function startDragTouch(e: TouchEvent) {
-    if (zoom <= 1 || e.touches.length !== 1) return;
-    isDragging = true;
-    dragStartX = e.touches[0].clientX;
-    dragStartY = e.touches[0].clientY;
-    panStartX = panX;
-    panStartY = panY;
-  }
+// Drag handlers (touch)
+function startDragTouch(e: TouchEvent) {
+	if (zoom <= 1 || e.touches.length !== 1) return;
+	isDragging = true;
+	dragStartX = e.touches[0].clientX;
+	dragStartY = e.touches[0].clientY;
+	panStartX = panX;
+	panStartY = panY;
+}
 
-  function doDragTouch(e: TouchEvent) {
-    if (!isDragging || e.touches.length !== 1) return;
-    const dx = e.touches[0].clientX - dragStartX;
-    const dy = e.touches[0].clientY - dragStartY;
-    if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
-    panX = panStartX + dx;
-    panY = panStartY + dy;
-  }
+function doDragTouch(e: TouchEvent) {
+	if (!isDragging || e.touches.length !== 1) return;
+	const dx = e.touches[0].clientX - dragStartX;
+	const dy = e.touches[0].clientY - dragStartY;
+	if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
+	panX = panStartX + dx;
+	panY = panStartY + dy;
+}
 
-  // 重置缩放状态
-  function openLightbox(item: WallpaperData) {
-    lightboxImage = item;
-    zoom = ZOOM_MIN;
-    panX = 0;
-    panY = 0;
-    document.body.style.overflow = "hidden";
-  }
+// 重置缩放状态
+function openLightbox(item: WallpaperData) {
+	lightboxImage = item;
+	zoom = ZOOM_MIN;
+	panX = 0;
+	panY = 0;
+	document.body.style.overflow = "hidden";
+}
 </script>
 
 <svelte:window onkeydown={handleKeydown} />

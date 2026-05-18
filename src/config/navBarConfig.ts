@@ -6,6 +6,7 @@ import {
 	NavBarSearchMethod,
 } from "../types/config";
 import { siteConfig } from "./siteConfig";
+
 // 根据页面开关动态生成导航栏配置
 const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 基础导航栏链接

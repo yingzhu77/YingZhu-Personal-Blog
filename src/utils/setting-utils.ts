@@ -114,8 +114,8 @@ export function setFollowImageHue(enabled: boolean): void {
 	localStorage.setItem("followImageHue", String(enabled));
 	if (enabled) {
 		// 切换为跟随图片时，立即根据当前图片更新色相
-		if (typeof window !== "undefined" && (window as any).__applyImageHue) {
-			(window as any).__applyImageHue();
+		if (typeof window !== "undefined" && window.__applyImageHue) {
+			window.__applyImageHue();
 		}
 	} else {
 		// 切换为固定色相时，应用配置中的固定色相
