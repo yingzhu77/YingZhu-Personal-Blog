@@ -48,12 +48,6 @@ export type SiteConfig = {
 		theme: "github" | "obsidian" | "vitepress";
 	};
 
-	// bangumi配置
-	bangumi?: {
-		userId?: string; // Bangumi用户ID
-		categoryOrder?: ("anime" | "game" | "book" | "music" | "real")[]; // 条目类型排序顺序
-	};
-
 	generateOgImages: boolean;
 	favicon: Array<{
 		src: string;
@@ -84,7 +78,6 @@ export type SiteConfig = {
 		friends: boolean; // 友链页面开关
 		sponsor: boolean; // 赞助页面开关
 		guestbook: boolean; // 留言板页面开关
-		bangumi: boolean;
 		gallery: boolean; // 相册页面开关
 	};
 
@@ -176,8 +169,7 @@ export enum LinkPreset {
 	Friends = 3,
 	Sponsor = 4,
 	Guestbook = 5,
-	Bangumi = 6,
-	Gallery = 7,
+	Gallery = 6,
 }
 
 export type NavBarLink = {

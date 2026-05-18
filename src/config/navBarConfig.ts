@@ -30,13 +30,6 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			icon: "material-symbols:code-blocks",
 		},
 
-		// 收藏夹
-		{
-			name: "收藏夹",
-			url: "/bookmarks/",
-			icon: "material-symbols:bookmark-outline",
-		},
-
 		// 友链
 		LinkPreset.Friends,
 
@@ -52,8 +45,12 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 				// 根据配置决定是否添加相册
 				...(siteConfig.pages.gallery ? [LinkPreset.Gallery] : []),
 
-				// 根据配置决定是否添加番组计划
-				...(siteConfig.pages.bangumi ? [LinkPreset.Bangumi] : []),
+				// 收藏夹
+				{
+					name: "收藏夹",
+					url: "/bookmarks/",
+					icon: "material-symbols:bookmark-outline",
+				},
 			],
 		},
 
