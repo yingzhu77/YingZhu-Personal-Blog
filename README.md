@@ -18,16 +18,16 @@
 
 ## 技术栈
 
-| 层级 | 技术 |
-|------|------|
-| 框架 | Astro 6 (SSG) |
-| 交互组件 | Svelte 5 (runes mode) |
-| 样式 | Tailwind CSS v4 + OKLCH 色彩空间 |
-| 页面过渡 | Swup |
-| 代码高亮 | Expressive Code |
-| 内容 | MDX |
-| 搜索 | Pagefind |
-| 包管理 | pnpm |
+| 层级     | 技术                             |
+| -------- | -------------------------------- |
+| 框架     | Astro 6 (SSG)                    |
+| 交互组件 | Svelte 5 (runes mode)            |
+| 样式     | Tailwind CSS v4 + OKLCH 色彩空间 |
+| 页面过渡 | Swup                             |
+| 代码高亮 | Expressive Code                  |
+| 内容     | MDX                              |
+| 搜索     | Pagefind                         |
+| 包管理   | pnpm                             |
 
 ---
 
@@ -38,20 +38,24 @@
 ### 新增模块
 
 **美图分享 (`/share/`)**
+
 - 壁纸画廊展示，可自选哪些壁纸参与随机轮换池（localStorage 持久化）
 - 阅读分享卡片：3:4 封面 + hover 浮层评价预览 + 详情弹窗
 - 音乐多歌单切换：CD 唱片圆形卡片 + 播放中旋转动画
 - 横向滚动歌单选择器，后台预加载封面
 
 **项目展示 (`/projects/`)**
+
 - Bento Grid 布局，首个项目占据大卡片
 - 展示 GitHub 项目信息：语言、技术栈标签、Star 数
 
 **收藏夹 (`/bookmarks/`)**
+
 - 替代原番组计划模块，位于"我的"下拉菜单
 - 按工具 / 教程 / 开源项目分类罗列链接
 
 **首页三段式打字文案**
+
 - 逐段打字 → 完整展示 → 删除 → 下一段，循环播放
 - 首行偏左 / 次行偏右不对称排版
 - 可通过 `backgroundWallpaper.ts` → `homeText.sections[]` 自由增减段落
@@ -96,20 +100,20 @@ pnpm lint
 
 所有站点配置集中在 `src/config/` 目录下：
 
-| 文件 | 用途 |
-|------|------|
-| `siteConfig.ts` | 站点标题、描述、域名、导航栏、页面开关 |
-| `profileConfig.ts` | 头像、昵称、签名、社交链接 |
-| `backgroundWallpaper.ts` | 壁纸图片、首页文案、色相、轮播 |
-| `navBarConfig.ts` | 导航栏链接与顺序 |
-| `musicConfig.ts` | 音乐播放器 · 网易云歌单 |
-| `readingConfig.ts` | 阅读分享 · 书评数据 |
-| `projectsConfig.ts` | 项目展示 · Bento Grid 卡片 |
-| `bookmarksConfig.ts` | 收藏夹 · 工具/教程/开源项目链接 |
-| `galleryConfig.ts` | 相册 · 相册列表与元数据 |
-| `friendsConfig.ts` | 友链 · 友情链接列表 |
-| `announcementConfig.ts` | 公告栏内容 |
-| `commentConfig.ts` | 评论系统配置 |
+| 文件                     | 用途                                   |
+| ------------------------ | -------------------------------------- |
+| `siteConfig.ts`          | 站点标题、描述、域名、导航栏、页面开关 |
+| `profileConfig.ts`       | 头像、昵称、签名、社交链接             |
+| `backgroundWallpaper.ts` | 壁纸图片、首页文案、色相、轮播         |
+| `navBarConfig.ts`        | 导航栏链接与顺序                       |
+| `musicConfig.ts`         | 音乐播放器 · 网易云歌单                |
+| `readingConfig.ts`       | 阅读分享 · 书评数据                    |
+| `projectsConfig.ts`      | 项目展示 · Bento Grid 卡片             |
+| `bookmarksConfig.ts`     | 收藏夹 · 工具/教程/开源项目链接        |
+| `galleryConfig.ts`       | 相册 · 相册列表与元数据                |
+| `friendsConfig.ts`       | 友链 · 友情链接列表                    |
+| `announcementConfig.ts`  | 公告栏内容                             |
+| `commentConfig.ts`       | 评论系统配置                           |
 
 详细维护说明见 [`docs/MAINTENANCE_GUIDE.md`](./docs/MAINTENANCE_GUIDE.md)。
 
@@ -137,43 +141,6 @@ src/
 ├── utils/               # 工具函数
 └── types/               # TypeScript 类型定义
 ```
-
----
-
-## 相册模块重构建议
-
-当前相册基于 CSS `column-count` 瀑布流，存在以下可改进点：
-
-### 1. 图片加载优化
-**现状**：所有照片在构建时通过 `fs.readdirSync` 扫描并全量渲染。  
-**建议**：
-- 使用 `client:visible` 懒加载 PhotoCard，折叠下方不阻塞首屏
-- 引入 Astro Image 优化相册封面和首屏图片
-- 对 `public/gallery/` 中原始图片做 AVIF/WebP 二次压缩
-
-### 2. 瀑布流排序
-**现状**：CSS `column-count` 排序为纵向优先（1→4→7 / 2→5→8 / 3→6→9）。  
-**建议**：
-- 改用 CSS Grid + `grid-row: auto / span N` 实现横向优先瀑布流
-- 或使用轻量 Masonry 库（如 `masonry-layout`），保持横向阅读顺序
-
-### 3. 图片预览
-**现状**：相册内图片无点击放大/灯箱功能。  
-**建议**：
-- 复用项目中已有的 `@fancyapps/ui` (Fancybox) 实现灯箱
-- 或在 `PhotoCard` 中添加点击事件，用现有 ImageWrapper 放大
-
-### 4. 增量更新
-**现状**：添加照片需要重新构建整个相册页。  
-**建议**：
-- 将相册数据改为内容集合（`src/content/gallery/`），支持增量构建
-- 或在 `galleryConfig` 中标记相册 `partial: true`，只构建变更的相册
-
-### 5. 移动端体验
-**现状**：双列瀑布流在窄屏上照片过小。  
-**建议**：
-- 移动端自动切换为单列或大图滑动模式
-- 增加触控友好的左右滑动浏览
 
 ---
 
