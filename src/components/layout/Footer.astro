@@ -1,26 +1,22 @@
 ---
-import fs from "node:fs";
-import path from "node:path";
 import { footerConfig, profileConfig } from "@/config";
 import { url } from "@/utils/url-utils";
 
 const currentYear = new Date().getFullYear();
 
 // 读取FooterConfig.html文件内容
+// 使用 Vite import.meta.glob + ?raw 替代 node:fs，兼容 Cloudflare Workers
+const footerHtmlModules = import.meta.glob<string>("../../config/FooterConfig.html", { query: "?raw", eager: true });
+const footerModKey = Object.keys(footerHtmlModules)[0];
 let customFooterHtml = "";
-if (footerConfig.enable) {
+if (footerConfig.enable && footerModKey) {
 	try {
-		const footerConfigPath = path.join(
-			process.cwd(),
-			"src",
-			"config",
-			"FooterConfig.html",
-		);
-		customFooterHtml = fs.readFileSync(footerConfigPath, "utf-8");
-		// 移除HTML注释
-		customFooterHtml = customFooterHtml.replace(/<!--[\s\S]*?-->/g, "").trim();
-	} catch (error) {
-		console.warn("FooterConfig.html文件读取失败:", error.message);
+		const mod = footerHtmlModules[footerModKey];
+		if (mod) {
+			customFooterHtml = mod.replace(/<!--[\s\S]*?-->/g, "").trim();
+		}
+	} catch (_error) {
+		// 静默回退
 	}
 }
 ---
