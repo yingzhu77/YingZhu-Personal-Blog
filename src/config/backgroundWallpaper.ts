@@ -81,7 +81,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				},
 				{
 					title: "人是会思考的芦苇，",
-					subtitle: "我在这里拾起碎片的思想",
+					subtitle: "我在这里拾起思想的碎片",
 				},
 				{
 					title: "当我摘下一张面具时，",
