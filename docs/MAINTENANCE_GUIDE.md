@@ -1,6 +1,6 @@
 # 博客维护指南
 
-> 快速查找添加/修改各类内容的位置与步骤。最后更新：2026-05-18
+> 快速查找添加/修改各类内容的位置与步骤。最后更新：2026-05-19
 
 ---
 
@@ -241,6 +241,16 @@ pnpm lint         # Biome 格式化 + lint
 pnpm icons        # 重新生成图标常量文件
 pnpm new-post     # 创建新文章
 ```
+
+### 部署
+
+**域名**：[yingzhu.xyz](https://yingzhu.xyz/)
+
+**平台**：Cloudflare Workers（通过 `wrangler.toml` 配置 `[assets]` 静态部署）
+
+**推送即部署**：`git push` 到 `master` 分支后 Cloudflare 自动构建。
+
+**构建命令**：`pnpm build`（标准 Astro SSG + Pagefind 搜索索引）
 
 ### 搜索测试
 

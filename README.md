@@ -5,9 +5,9 @@
 <h1 align="center">yingzhu77 — 个人博客</h1>
 
 <p align="center">
-  基于 <a href="https://github.com/CuteLeaf/Firefly">Firefly</a> 主题二次开发
+  🌐 <a href="https://yingzhu.xyz/"><strong>yingzhu.xyz</strong></a>
   <br/>
-  Firefly 源自 <a href="https://github.com/saicaca/fuwari">Fuwari</a>
+  基于 <a href="https://github.com/CuteLeaf/Firefly">Firefly</a> 主题二次开发 · Firefly 源自 <a href="https://github.com/saicaca/fuwari">Fuwari</a>
 </p>
 
 <p align="center">

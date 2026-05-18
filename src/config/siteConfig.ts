@@ -13,7 +13,7 @@ export const siteConfig: SiteConfig = {
 	subtitle: "ai-coding, 游戏，音乐与书",
 
 	// 站点 URL（上线前替换为实际域名）
-	site_url: "https://yingzhu77.example.com",
+	site_url: "https://yingzhu.xyz/",
 
 	// 站点描述
 	description:

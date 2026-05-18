@@ -6,7 +6,10 @@ const currentYear = new Date().getFullYear();
 
 // 读取FooterConfig.html文件内容
 // 使用 Vite import.meta.glob + ?raw 替代 node:fs，兼容 Cloudflare Workers
-const footerHtmlModules = import.meta.glob<string>("../../config/FooterConfig.html", { query: "?raw", eager: true });
+const footerHtmlModules = import.meta.glob<string>(
+	"../../config/FooterConfig.html",
+	{ query: "?raw", eager: true },
+);
 const footerModKey = Object.keys(footerHtmlModules)[0];
 let customFooterHtml = "";
 if (footerConfig.enable && footerModKey) {

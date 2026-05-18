@@ -3,7 +3,15 @@
 > 基于 [Firefly](https://github.com/CuteLeaf/Firefly) (源自 [Fuwari](https://github.com/saicaca/fuwari)) 的二次开发记录  
 > 详细维护指南：[MAINTENANCE_GUIDE.md](./MAINTENANCE_GUIDE.md)
 
-## 2026-05-10 ~ 2026-05-19 已完成
+## 2026-05-19 最新
+
+- 域名绑定：**[yingzhu.xyz](https://yingzhu.xyz/)**
+- Cloudflare Workers 部署：`wrangler.toml` + `[assets]` 静态资源
+- 公告更新：`(Agent)正在开发中......`
+- README 重写：项目介绍 + 二次开发模块 + 配置指南
+- 清理 `BLOG_REBUILD_PLAN.md` 为变更日志，删除 `README_NEXT_STEPS.md`
+
+## 2026-05-10 ~ 2026-05-18 已完成
 
 ### 品牌与配置
 - 色相系统 250° + 壁纸跟随动态色相
