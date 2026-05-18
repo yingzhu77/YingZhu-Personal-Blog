@@ -526,8 +526,8 @@ export type BackgroundWallpaperConfig = {
 		homeText?: {
 			enable: boolean; // 是否在首页显示自定义文字（全局开关）
 			switchable?: boolean; // 是否允许用户通过控制面板切换横幅标题显示
-			title?: string; // 主标题
-			subtitle?: string | string[]; // 副标题，支持单个字符串或字符串数组
+			title?: string; // 主标题（sections 未配置时使用）
+			subtitle?: string | string[]; // 副标题，支持单个字符串或字符串数组（sections 未配置时使用）
 			titleSize?: string; // 主标题字体大小，如 "3.5rem"
 			subtitleSize?: string; // 副标题字体大小，如 "1.5rem"
 			typewriter?: {
@@ -536,6 +536,11 @@ export type BackgroundWallpaperConfig = {
 				deleteSpeed: number; // 删除速度（毫秒）
 				pauseTime: number; // 完整显示后的暂停时间（毫秒）
 			};
+			/** 多段文案模式：每段包含大字(title)和小字(subtitle)，各自支持数组随机选取 */
+			sections?: Array<{
+				title: string | string[];
+				subtitle: string | string[];
+			}>;
 		};
 		navbar?: {
 			transparentMode?: "semi" | "full" | "semifull"; // 导航栏透明模式

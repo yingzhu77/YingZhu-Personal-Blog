@@ -9,6 +9,7 @@
 ## 联系方式
 
 - **GitHub**: [yingzhu77](https://github.com/yingzhu77)
+- **邮箱**: [YingZhu77@outlook.com](mailto:YingZhu77@outlook.com)
 
 ## 赞助支持
 

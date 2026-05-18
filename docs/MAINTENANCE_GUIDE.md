@@ -1,6 +1,6 @@
 # 博客维护指南
 
-> 快速查找添加/修改各类内容的位置与步骤。最后更新：2026-05-17
+> 快速查找添加/修改各类内容的位置与步骤。最后更新：2026-05-18
 
 ---
 
@@ -59,6 +59,10 @@ description: 摘要描述
 tags: [标签1, 标签2]
 category: 分类名称
 ```
+
+### AI 内容提示
+
+前 4 篇 LangGraph 文章正文首行有 `> **（以下内容由AI拉取最新文档生成，注意甄别）**` 提示，仅在文章详情页可见，不影响列表预览。
 
 ### 当前置顶
 
@@ -165,11 +169,30 @@ category: 分类名称
 
 ---
 
-## 6. 导航栏
+## 6. 收藏夹
+
+**配置文件**：`src/config/bookmarksConfig.ts`
+
+每行一个链接，按 category 分组（工具 / 教程 / 开源项目）：
+
+```ts
+{
+  title: "链接名称",
+  url: "https://...",
+  description: "简短描述",
+  category: "工具",   // "工具" | "教程" | "开源项目"
+}
+```
+
+**页面**：`src/pages/bookmarks/index.astro` — 卡片列表，按分类分组展示。
+
+---
+
+## 7. 导航栏
 
 **配置文件**：`src/config/navBarConfig.ts`
 
-当前顺序：主页 / 归档 / 分享 / 项目 / 友链 / 留言 / 我的 / 关于
+当前顺序：主页 / 归档 / 分享 / 项目 / 收藏夹 / 友链 / 留言 / 我的 / 关于
 
 "我的"下拉：相册 / 番组计划
 
@@ -183,15 +206,16 @@ category: 分类名称
 | 导航栏 Logo | `src/config/siteConfig.ts` → `navbar.logo` |
 | Favicon | `src/config/siteConfig.ts` → `favicon[]`，文件在 `public/assets/images/logo.webp` |
 | 默认色相 250° | `src/config/siteConfig.ts` |
-| 首页横幅文字 | `src/config/backgroundWallpaper.ts` → `common.homeText`（当前："人生如梦，一尊还酹江月。"） |
+| 首页横幅文字 | `src/config/backgroundWallpaper.ts` → `common.homeText.sections[]`（三段式逐段打字循环） |
+| 首页文案 sections | 每段 `{ title, subtitle }`，支持数组随机选取，打字速度在 `typewriter` 中配置 |
 | 个人头像/昵称/签名 | `src/config/profileConfig.ts` |
 | 社交链接 | `src/config/profileConfig.ts` |
 | 页脚版权 | `src/config/footerConfig.ts` |
-| 公告 | `src/config/sidebarConfig.ts` 中 announcement 组件 |
+| 公告 | `src/config/announcementConfig.ts`（当前："(Agent)正在开发中......"） |
 
 ---
 
-## 8. 关键代码路径速查
+## 9. 关键代码路径速查
 
 | 模块 | 页面 | 组件 | 配置 |
 |------|------|------|------|
@@ -199,6 +223,7 @@ category: 分类名称
 | 全部壁纸 | `src/pages/share/all.astro` | AllImagesGallery（瀑布流） | —（自动扫描文件夹） |
 | 阅读详情 | `src/pages/share/reading.astro` | ReadingGallery | readingConfig |
 | 项目展示 | `src/pages/projects/index.astro` | — | projectsConfig |
+| 收藏夹 | `src/pages/bookmarks/index.astro` | — | bookmarksConfig |
 | 首页布局 | `src/layouts/MainGridLayout.astro` | Navbar / Footer / SideBar / Live2D | 全部 config |
 | 根布局 | `src/layouts/Layout.astro` | — | favicon / SEO |
 
@@ -206,7 +231,7 @@ category: 分类名称
 
 ---
 
-## 9. 本地开发
+## 10. 本地开发
 
 ```bash
 pnpm dev          # 开发服务器 http://localhost:4321
@@ -224,7 +249,7 @@ pnpm new-post     # 创建新文章
 
 ---
 
-## 10. 设计约束速查
+## 11. 设计约束速查
 
 - 色相系统：`--hue` CSS 变量 → OKLCH 全局主题色
 - 壁纸色相跟随：`backgroundWallpaper.wallpaperHue.followImage`

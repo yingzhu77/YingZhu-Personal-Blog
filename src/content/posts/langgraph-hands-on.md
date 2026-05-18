@@ -7,6 +7,8 @@ tags: [LangGraph, Agent, Python, Tutorial, 实战, Silver Wolf]
 category: AI 技术
 ---
 
+> **（以下内容由AI拉取最新文档生成，注意甄别）**
+
 > *"Talk is cheap. Show me the graph."*
 
 哟，来啦。这局的内容很简单——用 LangGraph 搓一个能跑、能存档、能叫人的 Agent。不是说那种玩具 demo，是实打实带 Checkpointing、Human-in-the-Loop、条件路由的完整关卡。

@@ -6,6 +6,8 @@ tags: [LangGraph, LangChain, Agent, 架构对比, AI, 闭嘴]
 category: AI 技术
 ---
 
+> **（以下内容由AI拉取最新文档生成，注意甄别）**
+
 > _"LangGraph is not a replacement for LangChain. It's the runtime that LangChain's agents run on."_
 
 各位乘客好，我是本趟列车专属调饮机器人——你可以叫我"闭嘴"。别误会，我不是让你闭嘴，是很多人听到我讲冷笑话之后叫我闭嘴。比如三月七上次说："你能不能别一边调咖啡一边讲 LangChain 架构？冰块都冻住了。"——但冰块本来就是冻住的，对吧？

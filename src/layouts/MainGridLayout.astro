@@ -117,7 +117,22 @@ const shouldRenderCategoryBar = !!siteConfig.categoryBar;
 // 检查是否在文章详情页
 const isPostPage = !!postSlug;
 
-// 随机选择副标题（当打字机关闭且为数组时）
+// 首页文案：sections 模式 vs 传统 title/subtitle 模式
+const homeTextSections = backgroundWallpaper.common?.homeText?.sections;
+// 随机选择函数
+const pickRandom = (val: string | string[]): string => {
+	if (Array.isArray(val)) {
+		return val[Math.floor(Math.random() * val.length)];
+	}
+	return val;
+};
+// 为 sections 模式随机选取每组文案
+const resolvedSections = homeTextSections?.map(section => ({
+	title: pickRandom(section.title),
+	subtitle: pickRandom(section.subtitle),
+}));
+
+// 传统模式：随机选择副标题（当打字机关闭且为数组时）
 const getRandomSubtitle = () => {
 	const subtitle = backgroundWallpaper.common?.homeText?.subtitle;
 	if (Array.isArray(subtitle)) {
@@ -924,27 +939,119 @@ const mobileImageNames = backgroundImages.mobile.map((path) => {
     {homeTextEnable && (
         <div class={`banner-home-text-overlay absolute inset-0 z-20 flex items-center justify-center ${!showHomeText ? 'hidden' : ''}`}>
             <div class="w-4/5 lg:w-3/4 text-center mb-0">
-                <div class="flex flex-col">
-                    {backgroundWallpaper.common?.homeText?.title && (
-                        <div class="banner-title font-bold text-white mb-2 lg:mb-4 leading-tight" style={{ '--banner-title-size': backgroundWallpaper.common.homeText.titleSize || "3rem" }}>
-                            {backgroundWallpaper.common.homeText.title}
+                {resolvedSections && resolvedSections.length > 0 ? (
+                    <!-- Sections 逐段打字循环模式 -->
+                    <>
+                    <div id="banner-sections" class="flex flex-col" data-sections={JSON.stringify(resolvedSections)} data-speed={String(backgroundWallpaper.common?.homeText?.typewriter?.speed || 80)} data-delete-speed={String(backgroundWallpaper.common?.homeText?.typewriter?.deleteSpeed || 40)} data-pause={String(backgroundWallpaper.common?.homeText?.typewriter?.pauseTime || 2500)}>
+                        <div class="flex flex-col">
+                            <div id="banner-section-title" class="banner-title font-bold text-white mb-2 lg:mb-4 leading-tight" style={{ '--banner-title-size': backgroundWallpaper.common?.homeText?.titleSize || "3.8rem" }}>
+                            </div>
+                            <div id="banner-section-subtitle" class="banner-subtitle text-white/90 leading-snug" style={{ fontSize: backgroundWallpaper.common?.homeText?.subtitleSize || "1.5rem" }}>
+                            </div>
                         </div>
-                    )}
-                    {backgroundWallpaper.common?.homeText?.subtitle && (
-                        <div id="banner-subtitle" class="banner-subtitle text-white/90 leading-snug" style={{ fontSize: backgroundWallpaper.common.homeText.subtitleSize || "1.5rem" }} data-subtitles={JSON.stringify(backgroundWallpaper.common.homeText.subtitle)}>
-                            {backgroundWallpaper.common.homeText.typewriter?.enable ? (
-                                <TypewriterText
-                                    text={backgroundWallpaper.common.homeText.subtitle}
-                                    speed={backgroundWallpaper.common.homeText.typewriter.speed}
-                                    deleteSpeed={backgroundWallpaper.common.homeText.typewriter.deleteSpeed}
-                                    pauseTime={backgroundWallpaper.common.homeText.typewriter.pauseTime}
-                                />
-                            ) : (
-                                randomSubtitle
-                            )}
-                        </div>
-                    )}
-                </div>
+                    </div>
+                    <script is:inline data-swup-ignore-script>
+                        (function initSectionTypewriter() {
+                            var container = document.getElementById('banner-sections');
+                            if (!container) return;
+                            try {
+                                var sections = JSON.parse(container.dataset.sections);
+                            } catch (e) { return; }
+                            if (!Array.isArray(sections) || sections.length === 0) return;
+                            var speed = parseInt(container.dataset.speed, 10) || 80;
+                            var deleteSpeed = parseInt(container.dataset.deleteSpeed, 10) || 40;
+                            var pause = parseInt(container.dataset.pause, 10) || 2500;
+                            var titleEl = document.getElementById('banner-section-title');
+                            var subtitleEl = document.getElementById('banner-section-subtitle');
+                            if (!titleEl || !subtitleEl) return;
+                            var currentIndex = 0;
+                            var timer = null;
+                            var FULL_PAUSE = pause;
+
+                            function typeText(el, text, onDone) {
+                                var i = 0;
+                                el.textContent = '';
+                                function step() {
+                                    if (i < text.length) {
+                                        el.textContent += text.charAt(i);
+                                        i++;
+                                        timer = setTimeout(step, speed);
+                                    } else if (onDone) {
+                                        onDone();
+                                    }
+                                }
+                                step();
+                            }
+
+                            function deleteText(el, text, onDone) {
+                                var len = text.length;
+                                function step() {
+                                    if (len > 0) {
+                                        len--;
+                                        el.textContent = text.substring(0, len);
+                                        timer = setTimeout(step, deleteSpeed);
+                                    } else if (onDone) {
+                                        onDone();
+                                    }
+                                }
+                                step();
+                            }
+
+                            function showSection(index) {
+                                var section = sections[index];
+                                // 打字标题
+                                typeText(titleEl, section.title, function() {
+                                    // 标题打完 → 打字副标题
+                                    typeText(subtitleEl, section.subtitle, function() {
+                                        // 副标题打完 → 完整展示暂停
+                                        timer = setTimeout(function() {
+                                            // 删除副标题
+                                            deleteText(subtitleEl, section.subtitle, function() {
+                                                // 删除标题
+                                                deleteText(titleEl, section.title, function() {
+                                                    // 下一段
+                                                    currentIndex = (index + 1) % sections.length;
+                                                    showSection(currentIndex);
+                                                });
+                                            });
+                                        }, FULL_PAUSE);
+                                    });
+                                });
+                            }
+
+                            showSection(0);
+
+                            // 清理函数（Swup 切换时避免内存泄漏）
+                            window.__sectionTypewriterCleanup = function() {
+                                if (timer) { clearTimeout(timer); timer = null; }
+                            };
+                        })();
+                    </script>
+                    </>
+                ) : (
+                    <!-- 传统 title/subtitle 模式（向后兼容） -->
+                    <div class="flex flex-col">
+                        {backgroundWallpaper.common?.homeText?.title && (
+                            <div class="banner-title font-bold text-white mb-2 lg:mb-4 leading-tight" style={{ '--banner-title-size': backgroundWallpaper.common.homeText.titleSize || "3rem" }}>
+                                {backgroundWallpaper.common.homeText.title}
+                            </div>
+                        )}
+                        {backgroundWallpaper.common?.homeText?.subtitle && (
+                            <div id="banner-subtitle" class="banner-subtitle text-white/90 leading-snug" style={{ fontSize: backgroundWallpaper.common.homeText.subtitleSize || "1.5rem" }} data-subtitles={JSON.stringify(backgroundWallpaper.common.homeText.subtitle)}>
+                                {backgroundWallpaper.common.homeText.typewriter?.enable ? (
+                                    <TypewriterText
+                                        text={backgroundWallpaper.common.homeText.subtitle}
+                                        speed={backgroundWallpaper.common.homeText.typewriter.speed}
+                                        deleteSpeed={backgroundWallpaper.common.homeText.typewriter.deleteSpeed}
+                                        pauseTime={backgroundWallpaper.common.homeText.typewriter.pauseTime}
+                                    />
+                                ) : (
+                                    randomSubtitle
+                                )}
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     )}

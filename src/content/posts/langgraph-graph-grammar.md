@@ -6,6 +6,8 @@ tags: [LangGraph, StateGraph, Agent, Python, 设计模式, Bronya]
 category: AI 技术
 ---
 
+> **（以下内容由AI拉取最新文档生成，注意甄别）**
+
 > *"The graph is the architecture, and the architecture is the documentation."*
 
 任务记录，编号 B-02。上一篇已完成对 LangGraph 核心概念的初步侦察：State（共享记忆）、Nodes（执行单元）、Edges（控制流）——三个关键组件已确认。本次任务目标：将理论映射至代码层面，分析 StateGraph 构建语法、条件路由机制、Command 动态控制及 Send 并发模式。布洛妮娅已将优先级设为最高。

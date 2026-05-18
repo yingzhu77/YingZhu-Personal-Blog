@@ -64,37 +64,30 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		dimOpacity: 0.2,
 		// 主页横幅文字
 		homeText: {
-			// 是否启用主页横幅文字
 			enable: true,
-			// 是否允许用户通过控制面板切换横幅标题显示
 			switchable: true,
-			// 主页横幅主标题
-			title: "人生如梦，一尊还酹江月。",
-			// 主页横幅主标题字体大小
 			titleSize: "3.8rem",
-			// 主页横幅副标题
-			subtitle: [
-				"In Reddened Chrysalis, I Once Rest",
-				"From Shattered Sky, I Free Fall",
-				"Amidst Silenced Stars, I Deep Sleep",
-				"Upon Lighted Fyrefly, I Soon Gaze",
-				"From Undreamt Night, I Thence Shine",
-				"In Finalized Morrow, I Full Bloom",
-			],
-			// 主页横幅副标题字体大小
 			subtitleSize: "1.5rem",
 			typewriter: {
-				// 是否启用打字机效果
-				// 打字机开启 → 循环显示所有副标题
-				// 打字机关闭 → 每次刷新随机显示一条副标题
 				enable: true,
-				// 打字速度（毫秒）
-				speed: 100,
-				// 删除速度（毫秒）
-				deleteSpeed: 50,
-				// 完全显示后的暂停时间（毫秒）
-				pauseTime: 2000,
+				speed: 80,
+				deleteSpeed: 40,
+				pauseTime: 3000,
 			},
+			sections: [
+				{
+					title: "人生如梦",
+					subtitle: "一尊还酹江月",
+				},
+				{
+					title: "人是会思考的芦苇，",
+					subtitle: "我在这里拾起碎片的思想",
+				},
+				{
+					title: "当我摘下一张面具时，",
+					subtitle: "却又不知不觉带上了另一张",
+				},
+			],
 		},
 		// 导航栏配置
 		navbar: {

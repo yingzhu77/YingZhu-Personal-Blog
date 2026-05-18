@@ -30,6 +30,13 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			icon: "material-symbols:code-blocks",
 		},
 
+		// 收藏夹
+		{
+			name: "收藏夹",
+			url: "/bookmarks/",
+			icon: "material-symbols:bookmark-outline",
+		},
+
 		// 友链
 		LinkPreset.Friends,
 

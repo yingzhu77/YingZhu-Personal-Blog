@@ -4,6 +4,7 @@ enum I18nKey {
 	archive = "archive",
 	share = "share",
 	projects = "projects",
+	bookmarks = "bookmarks",
 	search = "search",
 	searchNoResults = "searchNoResults",
 	searchTypeSomething = "searchTypeSomething",
