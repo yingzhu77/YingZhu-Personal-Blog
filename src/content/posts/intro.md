@@ -3,7 +3,7 @@ title: 引言
 published: 2026-05-17
 pinned: true
 description: 一个普通大学生在 AI 浪潮下的自言自语——关于焦虑、开源、分享欲，以及这个网站的由来。
-tags: [AI, 焦虑, 开源, 个人思考, 杂谈, 技术发展, 引言]
+tags: [AI, 焦虑, 个人思考, 杂谈, 开源]
 category: 一些思考
 ---
 
