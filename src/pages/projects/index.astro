@@ -33,56 +33,52 @@ const sortedProjects = [...projects].reverse();
           <div class="flex flex-col gap-4">
             {sortedProjects.map((project) => (
               <div class="project-card card-base group border border-(--line-divider) rounded-(--radius-large) hover:border-(--primary)/30 transition-all duration-300 hover:shadow-lg">
-                <div class="p-5 md:p-6 flex flex-col sm:flex-row gap-4">
-                  <!-- 左侧：Logo -->
-                  {project.logo && (
+                <div class="p-5 md:p-6 flex flex-col gap-4">
+                  <!-- 项目头部：Logo + 标题 + GitHub 图标，同行并排 -->
+                  <div class="flex items-center gap-3">
+                    {project.logo && (
+                      <a
+                        href={project.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="shrink-0"
+                      >
+                        <img
+                          src={project.logo}
+                          alt={project.name}
+                          class="w-9 h-9 rounded-lg object-cover border border-black/5 dark:border-white/10 group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                      </a>
+                    )}
                     <a
                       href={project.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="shrink-0"
+                      class="flex-1 min-w-0 hover:text-(--primary) transition-colors"
                     >
-                      <img
-                        src={project.logo}
-                        alt={project.name}
-                        class="w-16 h-16 rounded-xl object-cover border border-black/5 dark:border-white/10 group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
+                      <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-(--primary) transition-colors leading-snug truncate">
+                        {project.name}
+                      </h3>
                     </a>
-                  )}
+                    <a
+                      href={project.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="shrink-0 btn-plain scale-animation rounded-lg h-9 w-9 flex items-center justify-center text-neutral-400 hover:text-(--primary) transition-colors"
+                      aria-label={`View ${project.name} on GitHub`}
+                    >
+                      <Icon name="fa7-brands:github" class="text-[1.25rem]" />
+                    </a>
+                  </div>
 
-                  <!-- 右侧：内容 -->
-                  <div class="flex-1 min-w-0">
-                    <!-- 项目头部 -->
-                    <div class="flex items-start justify-between gap-3 mb-2">
-                      <a
-                        href={project.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="hover:text-(--primary) transition-colors min-w-0"
-                      >
-                        <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-(--primary) transition-colors leading-snug">
-                          {project.name}
-                        </h3>
-                      </a>
-                      <a
-                        href={project.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="shrink-0 btn-plain scale-animation rounded-lg h-9 w-9 flex items-center justify-center text-neutral-400 hover:text-(--primary) transition-colors"
-                        aria-label={`View ${project.name} on GitHub`}
-                      >
-                        <Icon name="fa7-brands:github" class="text-[1.25rem]" />
-                      </a>
-                    </div>
+                  <!-- 描述 -->
+                  <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-3">
+                    {project.description}
+                  </p>
 
-                    <!-- 描述 -->
-                    <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-3">
-                      {project.description}
-                    </p>
-
-                    <!-- 元信息 + 标签 -->
-                    <div class="flex flex-wrap items-center gap-3">
+                  <!-- 元信息 + 标签 -->
+                  <div class="flex flex-wrap items-center gap-3">
                       {project.language && (
                         <span class="flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
                           <span class="w-2.5 h-2.5 rounded-full bg-(--primary) inline-block"></span>
