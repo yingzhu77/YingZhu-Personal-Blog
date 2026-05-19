@@ -231,9 +231,10 @@ $effect(() => {
   .masonry-skeleton { position: absolute; inset: 0; background: linear-gradient(90deg, var(--btn-regular-bg, #e0e0e0) 25%, oklch(from var(--primary) l c h / 0.08) 50%, var(--btn-regular-bg, #e0e0e0) 75%); background-size: 200% 100%; animation: shimmer 1.5s ease-in-out infinite; z-index: 1; }
   @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
   .masonry-placeholder { width: 100%; aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center; background: var(--btn-regular-bg, #f0f0f0); }
-  .masonry-overlay { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0); opacity: 0; transition: opacity 0.2s ease, background 0.2s ease; }
-  .masonry-item:hover .masonry-overlay { opacity: 1; background: rgba(0,0,0,0.3); }
-  .masonry-item.is-active .masonry-overlay { opacity: 1; background: rgba(0,0,0,0.15); }
+  .masonry-overlay { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+  .masonry-item.is-active .masonry-overlay { background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 50%); }
+  .masonry-overlay :global(svg) { opacity: 0; transition: opacity 0.2s ease; }
+  .masonry-item.is-active .masonry-overlay :global(svg) { opacity: 1; }
   .masonry-info { display: flex; align-items: center; gap: 0.375rem; padding: 0.5rem 0.625rem; }
   .current-badge { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.625rem; color: var(--primary); font-weight: 500; }
 
