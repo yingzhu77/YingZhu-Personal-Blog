@@ -47,10 +47,6 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			"assets/images/wallpapers/star-warm.jpeg",
 			"assets/images/wallpapers/bea-purple.jpeg",
 			"assets/images/wallpapers/cyan-bright.avif",
-			"assets/images/wallpapers/3fa5a22b26e9e17581a938afe173d431.jpeg",
-			"assets/images/wallpapers/a00e959315183b3aed38868f4c35eb3c.jpeg",
-			"assets/images/wallpapers/cb82bfc3b5d7c31b3b95a7b33bcc8c9d.jpeg",
-			"assets/images/wallpapers/d8563d58de591da9b281d55c6e8c3e1c.jpeg",
 		],
 		// 移动背景图片（支持单张或多张随机）
 		mobile: [
@@ -60,10 +56,6 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			"assets/images/wallpapers/star-warm.jpeg",
 			"assets/images/wallpapers/bea-purple.jpeg",
 			"assets/images/wallpapers/cyan-bright.avif",
-			"assets/images/wallpapers/3fa5a22b26e9e17581a938afe173d431.jpeg",
-			"assets/images/wallpapers/a00e959315183b3aed38868f4c35eb3c.jpeg",
-			"assets/images/wallpapers/cb82bfc3b5d7c31b3b95a7b33bcc8c9d.jpeg",
-			"assets/images/wallpapers/d8563d58de591da9b281d55c6e8c3e1c.jpeg",
 		],
 	},
 	// 横幅壁纸和全屏壁纸共享配置
