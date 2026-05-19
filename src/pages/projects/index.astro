@@ -79,25 +79,24 @@ const sortedProjects = [...projects].reverse();
 
                   <!-- 元信息 + 标签 -->
                   <div class="flex flex-wrap items-center gap-3">
-                      {project.language && (
-                        <span class="flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
-                          <span class="w-2.5 h-2.5 rounded-full bg-(--primary) inline-block"></span>
-                          {project.language}
+                    {project.language && (
+                      <span class="flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+                        <span class="w-2.5 h-2.5 rounded-full bg-(--primary) inline-block"></span>
+                        {project.language}
+                      </span>
+                    )}
+                    {project.stars !== undefined && (
+                      <span class="flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+                        <Icon name="material-symbols:star-outline" class="text-[0.9rem]" />
+                        {project.stars}
+                      </span>
+                    )}
+                    <div class="flex flex-wrap gap-1.5">
+                      {project.tags.map((tag) => (
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-(--primary)/10 text-(--primary) border border-(--primary)/20">
+                          {tag}
                         </span>
-                      )}
-                      {project.stars !== undefined && (
-                        <span class="flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
-                          <Icon name="material-symbols:star-outline" class="text-[0.9rem]" />
-                          {project.stars}
-                        </span>
-                      )}
-                      <div class="flex flex-wrap gap-1.5">
-                        {project.tags.map((tag) => (
-                          <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-(--primary)/10 text-(--primary) border border-(--primary)/20">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
+                      ))}
                     </div>
                   </div>
                 </div>
