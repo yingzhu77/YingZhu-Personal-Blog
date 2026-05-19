@@ -224,8 +224,8 @@ $effect(() => {
   .masonry-item { break-inside: avoid; margin-bottom: 0.75rem; border-radius: var(--radius-large, 0.75rem); overflow: hidden; background: var(--card-bg, #fff); border: 2px solid var(--line-divider, transparent); transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; }
   .masonry-item:hover { border-color: oklch(from var(--primary) l c h / 0.25); transform: translateY(-1px); }
   .masonry-item.is-active { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary), 0 4px 16px oklch(from var(--primary) l c h / 0.2); }
-  .masonry-thumb-wrapper { display: block; width: 100%; border: none; background: none; padding: 0; cursor: pointer; position: relative; overflow: hidden; }
-  .masonry-thumb { width: 100%; height: auto; display: block; transition: transform 0.3s ease, opacity 0.3s ease; opacity: 0; }
+  .masonry-thumb-wrapper { display: block; width: 100%; aspect-ratio: 16 / 10; border: none; background: none; padding: 0; cursor: pointer; position: relative; overflow: hidden; }
+  .masonry-thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease, opacity 0.3s ease; opacity: 0; }
   .masonry-thumb.loaded { opacity: 1; }
   .masonry-item:hover .masonry-thumb { transform: scale(1.03); }
   .masonry-skeleton { position: absolute; inset: 0; background: linear-gradient(90deg, var(--btn-regular-bg, #e0e0e0) 25%, oklch(from var(--primary) l c h / 0.08) 50%, var(--btn-regular-bg, #e0e0e0) 75%); background-size: 200% 100%; animation: shimmer 1.5s ease-in-out infinite; z-index: 1; }
