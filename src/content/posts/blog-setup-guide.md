@@ -45,6 +45,26 @@ category: 技术分享
 3. **配置前端**：在博客配置文件中填入 Waline 服务地址
 4. **登录模式**：可选匿名评论、强制登录或禁用登录
 
+### Waline 数据库与 OAuth 登录配置
+
+Waline 需要数据库存储评论，推荐使用 [Neon](https://neon.tech)（免费 PostgreSQL）：
+
+1. **创建数据库**：Vercel 项目 → **Storage** → **Create Database** → 选择 **Neon**
+2. **导入表结构**：在 Neon SQL Editor 执行 [waline.pgsql](https://github.com/walinejs/waline/blob/main/assets/waline.pgsql) 建表
+3. **配置环境变量**（Vercel → Settings → Environment Variables）：
+   - 数据库由 Vercel 自动注入，无需手动填 `PG_*`
+   - `JWT_TOKEN`：随机字符串，用于管理员登录
+   - `SITE_URL`：`https://你的域名`
+   - `SECURE_DOMAINS`：`你的域名,vercel.app`
+4. **部署 Auth 项目**：从 [walinejs/auth](https://github.com/walinejs/auth) 点击 Deploy with Vercel
+5. **配置 OAuth 登录**（强制登录必配）：
+   - 在 [GitHub OAuth Apps](https://github.com/settings/developers) 创建应用
+   - **Homepage URL**：Auth 项目域名
+   - **Authorization callback URL**：`https://xxx.vercel.app/github?redirect=&state=`
+   - Auth 项目环境变量：`GITHUB_ID`、`GITHUB_SECRET`
+   - 主项目环境变量：`OAUTH_URL = https://xxx.vercel.app`
+6. **Redeploy**：两个项目分别重新部署后生效
+
 ## 四、部署上线
 
 本博客使用 Cloudflare Workers 进行静态部署，推送代码到 GitHub 后自动构建部署。
