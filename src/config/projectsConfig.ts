@@ -25,6 +25,15 @@ export const projects: Project[] = [
 		url: "https://github.com/yingzhu77/Privagent",
 		language: "Python",
 		stars: 1,
-		tags: ["Vue3", "FastAPI", "LangGraph", "PostgreSQL", "pgvector", "AI", "MCP", "Docker"],
+		tags: [
+			"Vue3",
+			"FastAPI",
+			"LangGraph",
+			"PostgreSQL",
+			"pgvector",
+			"AI",
+			"MCP",
+			"Docker",
+		],
 	},
 ];

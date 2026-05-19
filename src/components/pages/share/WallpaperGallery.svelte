@@ -557,7 +557,7 @@ function openLightbox(item: WallpaperData) {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0);
+    background: transparent;
     transition: background 0.2s ease;
   }
 
@@ -566,7 +566,7 @@ function openLightbox(item: WallpaperData) {
   }
 
   .wallpaper-card.is-active .thumbnail-overlay {
-    background: rgba(0, 0, 0, 0.15);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 50%);
   }
 
   .thumbnail-overlay :global(svg) {

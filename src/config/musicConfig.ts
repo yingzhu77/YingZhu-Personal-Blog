@@ -96,7 +96,8 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 		{
 			id: "yorushika-gento",
 			name: "二人称",
-			description: "《二人称》共收录22首作品，内容横跨ヨルシカ近年的代表创作与全新篇章，包括《太陽》《修羅》《忘れてください》等已发布曲目，同时特别收录重新录制版本的《ヒッチコック》，以及12首全新原创歌曲，呈现出极为完整且层次丰富的音乐叙事。",
+			description:
+				"《二人称》共收录22首作品，内容横跨ヨルシカ近年的代表创作与全新篇章，包括《太陽》《修羅》《忘れてください》等已发布曲目，同时特别收录重新录制版本的《ヒッチコック》，以及12首全新原创歌曲，呈现出极为完整且层次丰富的音乐叙事。",
 			cover: "",
 			server: "netease",
 			type: "album",
@@ -106,7 +107,8 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 		{
 			id: "avemujica",
 			name: "Completeness",
-			description: "2025年1月にリリースされ、国内外で大きな話題を呼んだ、TVアニメ「BanG Dream! Ave Mujica」のオープニングテーマ「KiLLKiSS」と、エンディングテーマ「Georgette Me, Georgette You」の2曲を含む、全7曲を収録。",
+			description:
+				"2025年1月にリリースされ、国内外で大きな話題を呼んだ、TVアニメ「BanG Dream! Ave Mujica」のオープニングテーマ「KiLLKiSS」と、エンディングテーマ「Georgette Me, Georgette You」の2曲を含む、全7曲を収録。",
 			cover: "",
 			server: "netease",
 			type: "album",
@@ -116,7 +118,8 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 		{
 			id: "togeari",
 			name: "棘ナシ",
-			description: "本年度最强新番「GIRLS BAND CRY」剧中少女乐队トゲナシトゲアリ 第二张专辑『棘ナシ』将于2024年8月28日正式发行。专辑收录了TV动画中的片头曲、片尾曲和多首插入歌曲，以及两首TV动画中未使用的全新歌曲，共计12首歌曲。",
+			description:
+				"本年度最强新番「GIRLS BAND CRY」剧中少女乐队トゲナシトゲアリ 第二张专辑『棘ナシ』将于2024年8月28日正式发行。专辑收录了TV动画中的片头曲、片尾曲和多首插入歌曲，以及两首TV动画中未使用的全新歌曲，共计12首歌曲。",
 			cover: "",
 			server: "netease",
 			type: "album",
