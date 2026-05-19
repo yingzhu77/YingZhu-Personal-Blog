@@ -2,7 +2,7 @@
 title: LangGraph 与 LangChain——它们不是对手，而是一个生态里的"操作系统"与"标准库"
 published: 2026-05-12
 description: 很多初学者把 LangGraph 和 LangChain 理解为竞品。大错特错。它们的关系更像是 Linux 内核与 GNU 工具集：一个负责运行与调度，一个提供抽象与集成。本文从产品矩阵、设计哲学、使用场景三个维度彻底说清楚。
-tags: [LangGraph, LangChain, Agent, 架构对比, AI]
+tags: [LangGraph, LangChain, Agent, 架构对比, 闭嘴]
 category: AI 技术
 ---
 

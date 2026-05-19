@@ -3,7 +3,7 @@ title: LangGraph 实战入门——从零构建一个可持久化、有人工审
 published: 2026-05-13
 pinned: false
 description: 前几篇建立了理论，这篇我们动手写代码。用 LangGraph 从零构建一个完整的 Agent：定义工具、设计图结构、加入持久化和人在回路。每一步都有解释，每一行代码都带注释。
-tags: [LangGraph, Agent, Python, Tutorial, 实战]
+tags: [LangGraph, Agent, Python, 实战, Silver Wolf]
 category: AI 技术
 ---
 

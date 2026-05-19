@@ -2,7 +2,7 @@
 title: LangGraph 图语法深度解析——StateGraph、Command 与 Send 的设计思想
 published: 2026-05-11
 description: 上一篇我们理解了"图"为 Agent 带来的架构优势，本文深入到 API 层面，详解 StateGraph 的构建语法、条件路由、Command 动态控制、Send 并发模式，以及"Thinking in LangGraph"的思维转变。
-tags: [LangGraph, StateGraph, Agent, Python, 设计模式]
+tags: [LangGraph, StateGraph, Agent, Python, Bronya]
 category: AI 技术
 ---
 
