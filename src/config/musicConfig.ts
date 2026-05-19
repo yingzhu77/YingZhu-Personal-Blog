@@ -105,7 +105,7 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 		},
 		{
 			id: "avemujica",
-			name: "Ave Mujica",
+			name: "Completeness",
 			description: "2025年1月にリリースされ、国内外で大きな話題を呼んだ、TVアニメ「BanG Dream! Ave Mujica」のオープニングテーマ「KiLLKiSS」と、エンディングテーマ「Georgette Me, Georgette You」の2曲を含む、全7曲を収録。",
 			cover: "",
 			server: "netease",
