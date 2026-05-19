@@ -557,27 +557,18 @@ function openLightbox(item: WallpaperData) {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent;
-    transition: background 0.2s ease;
+    pointer-events: none;
   }
 
-  .wallpaper-card:hover .thumbnail-overlay {
-    background: rgba(0, 0, 0, 0.3);
-  }
-
+  /* 活跃壁纸：底部黑边渐变 */
   .wallpaper-card.is-active .thumbnail-overlay {
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 50%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.35) 0%, transparent 50%);
   }
 
   .thumbnail-overlay :global(svg) {
     opacity: 0;
     transform: scale(0.8);
     transition: opacity 0.2s ease, transform 0.2s ease;
-  }
-
-  .wallpaper-card:hover .thumbnail-overlay :global(svg) {
-    opacity: 1;
-    transform: scale(1);
   }
 
   .wallpaper-card.is-active .thumbnail-overlay :global(svg) {
