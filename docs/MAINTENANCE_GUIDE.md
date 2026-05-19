@@ -167,6 +167,33 @@ category: 分类名称
 
 每行一个项目，首页首个占据 Bento Grid 大卡片。
 
+### 配置字段
+
+```ts
+{
+  name: "项目名称",
+  description: "项目描述",
+  url: "https://github.com/...",
+  logo: "/assets/images/projects/xxx.png",  // 可选，无 logo 则不显示
+  language: "TypeScript",                    // 可选
+  stars: 1,                                  // 可选
+  tags: ["Vue3", "FastAPI", "Docker"],       // 必填
+}
+```
+
+### 项目 Logo
+
+- Logo 文件存放在 `public/assets/images/projects/` 目录
+- 推荐尺寸：120x120px 或更大，正方形
+- 支持格式：PNG、WebP、SVG
+- 无 logo 的项目可省略 `logo` 字段，卡片将不显示 logo 区域
+
+### 添加新项目
+
+1. 将项目 logo 放入 `public/assets/images/projects/`（可选）
+2. 在 `projectsConfig.ts` 的 `projects` 数组中添加条目
+3. 按需调整 `tags` 数组的技术栈标签
+
 ---
 
 ## 6. 收藏夹

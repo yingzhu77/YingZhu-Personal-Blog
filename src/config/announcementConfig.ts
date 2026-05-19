@@ -5,7 +5,7 @@ export const announcementConfig: AnnouncementConfig = {
 	title: "公告",
 
 	// 公告内容
-	content: "(Agent)正在开发中......",
+	content: "(Agent)正在开发中...... Token用完，我就会死。",
 
 	// 是否允许用户关闭公告
 	closable: true,
