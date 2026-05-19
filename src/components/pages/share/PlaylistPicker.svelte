@@ -171,6 +171,7 @@ function handleKeydown(e: KeyboardEvent, pl: PlaylistCardData) {
     scrollbar-width: thin; scrollbar-color: var(--primary) transparent;
     padding: 0.5rem 0.25rem;
     contain: layout style paint;
+    scrollbar-gutter: stable;
   }
 
   .pl-card {
