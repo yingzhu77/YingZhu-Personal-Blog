@@ -12,16 +12,16 @@ export const projects: Project[] = [
 	{
 		name: "mINDCare Studio",
 		description:
-			"基于 Vue3、NestJS、Prisma、Docker 与 Electron 的 AI 心理健康管理平台。支持管理后台和用户端双角色，提供 AI 聊天、情绪日记、知识科普、数据看板，以及 Windows 桌面演示应用。",
+			"基于 Vue3、NestJS、Prisma、Docker 与 Electron 的 AI 心理健康管理平台（v2.6.0）。管理后台 + 用户端双角色，提供 AI 聊天（SSE 流式）、情绪日记与洞察（趋势/分布 ECharts 图表）、知识科普 CRUD + 文章审核修订、通知系统、数据看板、中英繁三语切换、Playwright E2E 测试，以及 Windows 桌面演示应用（NSIS + 便携版打包）。",
 		url: "https://github.com/yingzhu77/mINDCare-Studio",
 		logo: "/assets/images/projects/mindcare-logo.png",
 		language: "TypeScript",
-		tags: ["Vue3", "NestJS", "Prisma", "Electron", "Docker", "AI", "DeepSeek"],
+		tags: ["Vue3", "NestJS", "Prisma", "Electron", "Docker", "AI", "DeepSeek", "E2E"],
 	},
 	{
 		name: "PrivAgent",
 		description:
-			"隐私优先的本地 AI Agent，数据不出本机。基于 Vue 3 + FastAPI + LangGraph + PostgreSQL/pgvector 构建，支持 LangGraph 6 节点状态图 Agent、7 个内置工具、MCP 协议扩展，350 个单元测试覆盖全链路。",
+			"隐私优先的本地 AI Agent，数据不出本机。基于 Vue 3 + FastAPI + LangGraph + PostgreSQL/pgvector 构建，LangGraph 6 节点状态图驱动自主决策（Recall → Plan → Act → Observe → Decide → Summarize），6 个内置工具（知识库语义检索、联网搜索、深度研究、网页抓取等），MCP 协议扩展（stdio/SSE），Provider Profile 后端隔离存储，Docker 5 容器一键部署，369 个单元测试覆盖全链路。",
 		url: "https://github.com/yingzhu77/Privagent",
 		language: "Python",
 		stars: 1,
@@ -35,5 +35,13 @@ export const projects: Project[] = [
 			"MCP",
 			"Docker",
 		],
+	},
+	{
+		name: "YingZhu Personal Blog",
+		description:
+			"基于 Firefly 主题二次开发的个人博客。新增分享中心（壁纸画廊 Lightbox 预览 + 轮换池、阅读书评卡片、音乐多歌单切换）、音乐系统重构（MusicManager 单例 API、LRC 歌词同步、Meting 多节点容错）、首页三段式打字文案、动态色相系统（OKLCH 跟随壁纸主色）、Waline 评论集成、收藏夹与项目展示页。",
+		url: "https://github.com/yingzhu77/YingZhu-Personal-Blog",
+		language: "TypeScript",
+		tags: ["Astro", "Svelte", "Tailwind CSS", "Waline", "Cloudflare"],
 	},
 ];
