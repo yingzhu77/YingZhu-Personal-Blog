@@ -6,6 +6,7 @@
 
 <p align="center">
   🌐 <a href="https://yingzhu.xyz/"><strong>yingzhu.xyz</strong></a>
+  · 📦 <a href="https://github.com/yingzhu77/YingZhu-Personal-Blog"><strong>GitHub</strong></a>
   <br/>
   基于 <a href="https://github.com/CuteLeaf/Firefly">Firefly</a> 主题二次开发 · Firefly 源自 <a href="https://github.com/saicaca/fuwari">Fuwari</a>
 </p>
@@ -37,17 +38,23 @@
 
 ### 新增模块
 
-**美图分享 (`/share/`)**
+**分享中心 (`/share/`)**
 
-- 壁纸画廊展示，可自选哪些壁纸参与随机轮换池（localStorage 持久化）
-- 阅读分享卡片：3:4 封面 + hover 浮层评价预览 + 详情弹窗
-- 音乐多歌单切换：CD 唱片圆形卡片 + 播放中旋转动画
-- 横向滚动歌单选择器，后台预加载封面
+- **壁纸画廊**：瀑布流展示，Lightbox 放大预览（拖拽平移、键盘缩放），可勾选壁纸加入随机轮换池（localStorage 持久化，FIFO 最多 6 张）
+- **阅读分享**：书评卡片（3:4 封面 + hover 浮层评价预览 + 详情弹窗），数据驱动于 `readingConfig.ts`
+- **音乐分享**：CD 唱片风格歌单选择器，旋转动画 + 均衡器状态指示，点击切换侧边栏播放器歌单
+- 独立阅读子页 (`/share/reading/`) 与全量壁纸页 (`/share/all/`)
+
+**音乐系统重构**
+
+- 全新 `MusicManager`（522 行）：单例模式 `window.__fireflyMusic` API，支持多歌单切换、LRC 歌词同步、Meting API 多节点容错
+- 多歌单配置 (`musicConfig.ts`)：6 个歌单（ヨルシカ全专辑、星穹铁道 OST、Ave Mujica 等）
+- 事件驱动架构：`fm:init` / `fm:track` / `fm:play-state` / `fm:playlist-switched` / `fm:lrc-index` 等
 
 **项目展示 (`/projects/`)**
 
 - Bento Grid 布局，首个项目占据大卡片
-- 展示 GitHub 项目信息：语言、技术栈标签、Star 数
+- 展示 GitHub 项目信息：语言指示点、技术栈标签、Star 数
 
 **收藏夹 (`/bookmarks/`)**
 
@@ -58,20 +65,23 @@
 
 - 逐段打字 → 完整展示 → 删除 → 下一段，循环播放
 - 首行偏左 / 次行偏右不对称排版
+- `Intl.Segmenter` 支持 CJK 字符集群正确分割
 - 可通过 `backgroundWallpaper.ts` → `homeText.sections[]` 自由增减段落
 
 ### 功能增强
 
-- **动态色相系统**：切换壁纸时主色调跟随图片主色变化，OKLCH 色彩空间
-- **壁纸轮换池**：用户在分享页勾选壁纸卡片控制随机切换范围
-- **壁纸轮播**：Ken Burns 缩放 + 淡入淡出过渡
+- **动态色相系统**：切换壁纸时主色调跟随图片主色变化（OKLCH 色彩空间），CSS `--hue` 变量全局联动
+- **壁纸轮换池**：用户在分享页勾选壁纸卡片控制随机切换范围，`WallpaperGallery` 与 `AllImagesGallery` 共享池状态
+- **壁纸轮播**：Ken Burns 缩放 + 淡入淡出过渡 + 渐变遮罩切换
+- **评论系统**：集成 Waline v3，OAuth 强制登录，自定义表情包（微博、B 站、BMOJI），访问量统计
 - **Live2D / Spine 看板娘**：保留原 Firefly 功能
 
-### 内容替换
+### 模块移除
 
-- 移除全部 demo 文章，替换为 LangGraph 系列技术文章
-- 个人化全部站点配置（标题、头像、签名、友链、关于等）
-- 删除链接模块、樱花特效等不需要的功能
+- **番组计划 (Bangumi)**：完整删除页面、组件、类型定义及 60+ i18n 键
+- **樱花特效**：移除粒子动画，原位置替换为壁纸随机切换按钮
+- **导航栏链接下拉**：重构为「分享 / 项目 / 我的」导航结构
+- 全部 demo 文章移除，替换为 LangGraph 系列技术文章与个人化内容
 
 ---
 
