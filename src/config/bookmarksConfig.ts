@@ -36,4 +36,10 @@ export const bookmarks: Bookmark[] = [
 		description: "吉他指板算法——和弦指法计算与可视化开源项目。",
 		category: "开源项目",
 	},
+	{
+		title: "MSST WebUI",
+		url: "https://doc.msst.fun/",
+		description: "AI 分离人声/伴奏/乐器轨，不求人，亲测好用。",
+		category: "工具",
+	},
 ];

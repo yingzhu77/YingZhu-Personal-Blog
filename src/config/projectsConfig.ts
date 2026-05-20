@@ -16,7 +16,16 @@ export const projects: Project[] = [
 		url: "https://github.com/yingzhu77/mINDCare-Studio",
 		logo: "/assets/images/projects/mindcare-logo.png",
 		language: "TypeScript",
-		tags: ["Vue3", "NestJS", "Prisma", "Electron", "Docker", "AI", "DeepSeek", "E2E"],
+		tags: [
+			"Vue3",
+			"NestJS",
+			"Prisma",
+			"Electron",
+			"Docker",
+			"AI",
+			"DeepSeek",
+			"E2E",
+		],
 	},
 	{
 		name: "PrivAgent",
