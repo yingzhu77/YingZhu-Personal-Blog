@@ -24,8 +24,11 @@ interface WallpaperData {
 
 const hueMap = backgroundWallpaper.wallpaperHue?.imageHueMap ?? {};
 const wallpaperItems: WallpaperData[] = [];
+const imageEntries = Object.entries(imageModules).sort(([a], [b]) =>
+	a.localeCompare(b),
+);
 
-for (const [filePath, loader] of Object.entries(imageModules)) {
+for (const [filePath, loader] of imageEntries) {
 	const fileName =
 		filePath
 			.split("/")

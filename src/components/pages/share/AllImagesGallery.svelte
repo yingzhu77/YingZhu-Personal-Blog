@@ -220,7 +220,7 @@ $effect(() => {
 <style>
   .masonry-container { column-count: 2; column-gap: 0.75rem; }
   @media (min-width: 768px) { .masonry-container { column-count: 3; column-gap: 1rem; } }
-  @media (min-width: 1280px) { .masonry-container { column-count: 4; column-gap: 1rem; } }
+  @media (min-width: 1280px) { .masonry-container { column-count: 3; column-gap: 1rem; } }
   .masonry-item { break-inside: avoid; margin-bottom: 0.75rem; border-radius: var(--radius-large, 0.75rem); overflow: hidden; background: var(--card-bg, #fff); border: 2px solid var(--line-divider, transparent); transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; }
   .masonry-item:hover { border-color: oklch(from var(--primary) l c h / 0.25); transform: translateY(-1px); }
   .masonry-item.is-active { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary), 0 4px 16px oklch(from var(--primary) l c h / 0.2); }
