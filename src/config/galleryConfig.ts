@@ -23,7 +23,13 @@ export const galleryConfig: GalleryConfig = {
 			date: "2026-01-01",
 			tags: ["崩坏星穹铁道", "流萤"],
 		},
-		// 旧项目遗留相册已删除，待后续填入新相册
+		{
+			id: "ren-sheng-de-xian",
+			name: "人生得闲",
+			description: "谁的人生不是未完待续",
+			date: "2026-05-20",
+			tags: ["日常"],
+		},
 	],
 
 	// 瀑布流最小列宽(px)，浏览器根据容器宽度自动计算列数，默认 240
