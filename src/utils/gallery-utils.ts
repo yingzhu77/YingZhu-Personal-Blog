@@ -1,5 +1,8 @@
+import { createRequire } from "node:module";
 import type { GalleryAlbum } from "@/types/config";
 import { url } from "@/utils/url-utils";
+
+const _require = createRequire(import.meta.url);
 
 function withBase(assetPath: string): string {
 	if (!assetPath) return "";
@@ -33,9 +36,9 @@ export function scanAlbumPhotos(albumId: string): string[] {
 	let fs: typeof import("node:fs");
 	let path: typeof import("node:path");
 	try {
-		// 动态 require 避免 Workers 预渲染时静态导入失败
-		fs = require("node:fs");
-		path = require("node:path");
+		// 使用 createRequire 兼容 Vite ESM 上下文
+		fs = _require("node:fs");
+		path = _require("node:path");
 	} catch {
 		return [];
 	}
