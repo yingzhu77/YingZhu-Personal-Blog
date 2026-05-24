@@ -53,4 +53,12 @@ export const projects: Project[] = [
 		language: "TypeScript",
 		tags: ["Astro", "Svelte", "Tailwind CSS", "Waline", "Cloudflare"],
 	},
+	{
+		name: "吉他和弦速查",
+		description:
+			"面向吉他初学者的极简 uni-app 微信小程序。点击指板弦位快速查询单音和常见和弦，支持和弦识别与中文解释、内置 Standard/Drop D/半音降/DADGAD/Open G 五种调弦模式、自定义空弦音本地缓存，纯前端离线可用，无登录无后端。",
+		url: "https://github.com/yingzhu77/guitar-chord-finder",
+		language: "TypeScript",
+		tags: ["uni-app", "Vue3", "Vite", "微信小程序", "Guitar"],
+	},
 ];

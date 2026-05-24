@@ -3,7 +3,17 @@
 > 基于 [Firefly](https://github.com/CuteLeaf/Firefly) (源自 [Fuwari](https://github.com/saicaca/fuwari)) 的二次开发记录  
 > 详细维护指南：[MAINTENANCE_GUIDE.md](./MAINTENANCE_GUIDE.md)
 
-## 2026-05-19 最新
+## 2026-05-22 最新
+
+- 新增博文：「小满，对于永恒的一些思考」+「AI Coding 总结的部分经验与复盘」
+- 相册功能：新增「人生得闲」相册（`public/gallery/ren-sheng-de-xian/`），支持标签筛选 + 三列网格布局
+- 音乐歌单：新增 avemujica（Completeness）+ togeari（棘ナシ），共 6 组歌单，默认切换为夏草が邪魔をする
+- 项目展示：新增「吉他和弦速查」小程序项目，mINDCare 添加 Logo，共 4 个项目
+- 收藏夹：新增 MSST WebUI（AI 人声分离工具），共 6 项
+- 全部壁纸页（`/share/all/`）：三列瀑布流布局
+- 公告更新：`(Agent)正在开发中...... Token用完，我就会死。`
+
+## 2026-05-19
 
 - 域名绑定：**[yingzhu.xyz](https://yingzhu.xyz/)**
 - Cloudflare Workers 部署：`wrangler.toml` + `[assets]` 静态资源

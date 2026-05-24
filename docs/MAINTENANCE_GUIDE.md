@@ -1,6 +1,6 @@
 # 博客维护指南
 
-> 快速查找添加/修改各类内容的位置与步骤。最后更新：2026-05-19
+> 快速查找添加/修改各类内容的位置与步骤。最后更新：2026-05-22
 
 ---
 
@@ -119,14 +119,16 @@ category: 分类名称
 }
 ```
 
-**当前歌单**（4 组）：
+**当前歌单**（6 组）：
 
-| ID | 名称 | 类型 | 网易云 ID |
-|----|------|------|-----------|
-| starrail-songs | 崩坏：星穹铁道 | playlist | 10046455237 |
-| yorushika-collection | ヨルシカ · 全专辑收录 | playlist | 8780955963 |
-| yorushika-gento | 二人称 | album | 364564348 |
-| yorushika-natsukusa | 夏草が邪魔をする | album | 35670522 |
+| ID | 名称 | 类型 | 网易云 ID | 默认 |
+|----|------|------|-----------|------|
+| yorushika-natsukusa | 夏草が邪魔をする | album | 35670522 | ✓ |
+| starrail-songs | 崩坏：星穹铁道 | playlist | 10046455237 | |
+| yorushika-collection | ヨルシカ · 全专辑收录 | playlist | 8780955963 | |
+| yorushika-gento | 二人称 | album | 364564348 | |
+| avemujica | Completeness | album | 269138556 | |
+| togeari | 棘ナシ | album | 246241907 | |
 
 **添加新歌单**：在网易云音乐找到歌单/专辑页，URL 中 `id=` 后的数字即为 `id_meting`。
 
@@ -211,11 +213,64 @@ category: 分类名称
 }
 ```
 
+**当前收藏夹**（6 项）：mirrorchyan、B站 GTP 谱分享 ×2、Claude Code 教程、guitarChord、MSST WebUI
+
 **页面**：`src/pages/bookmarks/index.astro` — 卡片列表，按分类分组展示。
 
 ---
 
-## 7. 导航栏
+## 7. 相册
+
+**配置文件**：`src/config/galleryConfig.ts`
+
+相册图片存放在 `public/gallery/<相册ID>/` 目录下，支持 jpg/png/webp/avif/gif 格式。
+
+### 配置字段
+
+```ts
+{
+  id: "album-id",           // 唯一标识，对应 public/gallery/ 下的子目录名
+  name: "相册名称",
+  description: "相册描述",
+  date: "2026-05-20",       // YYYY-MM-DD，用于排序和显示
+  tags: ["日常"],           // 标签，用于页面筛选
+  cover: "",                // 可选，不填则自动使用 cover.* 或第一张图片
+  location: "",             // 可选，拍摄地点
+  password: "",             // 可选，访问密码
+  passwordHint: "",         // 可选，密码提示
+}
+```
+
+### 当前相册（1 个）
+
+| ID | 名称 | 日期 | 标签 | 图片数 |
+|----|------|------|------|--------|
+| ren-sheng-de-xian | 人生得闲 | 2026-05-20 | 日常 | 1 |
+
+### 添加新相册
+
+1. 在 `public/gallery/` 下创建以 `id` 命名的子目录，放入图片
+2. 在 `galleryConfig.ts` 的 `albums` 数组中添加配置条目
+3. 可选：放入 `cover.*` 文件作为封面图，否则自动使用第一张
+
+### 页面
+
+- **相册列表**：`/gallery/` — 三列网格卡片，支持标签筛选
+- **相册详情**：`/gallery/<id>/` — 瀑布流展示照片，支持 Lightbox 预览
+- **全部壁纸**：`/share/all/` — 自动扫描 `src/assets/images/wallpapers/` 目录，三列瀑布流布局
+
+### 图片路径说明
+
+| 用途 | 存放位置 | 说明 |
+|------|----------|------|
+| 相册照片 | `public/gallery/<id>/` | 静态资源，不经 Astro 优化 |
+| 壁纸轮换 | `src/assets/images/wallpapers/` | 经 Astro 优化，出现在 `/share/` 和 `/share/all/` |
+| 文章图片 | `public/assets/images/posts/` | 文章内引用的图片 |
+| 项目 Logo | `public/assets/images/projects/` | 项目展示页 Logo |
+
+---
+
+## 8. 导航栏
 
 **配置文件**：`src/config/navBarConfig.ts`
 
@@ -225,7 +280,7 @@ category: 分类名称
 
 ---
 
-## 7. 站点基本信息
+## 9. 站点基本信息
 
 | 配置项 | 文件 |
 |--------|------|
@@ -238,19 +293,21 @@ category: 分类名称
 | 个人头像/昵称/签名 | `src/config/profileConfig.ts` |
 | 社交链接 | `src/config/profileConfig.ts` |
 | 页脚版权 | `src/config/footerConfig.ts` |
-| 公告 | `src/config/announcementConfig.ts`（当前："(Agent)正在开发中......"） |
+| 公告 | `src/config/announcementConfig.ts`（当前："(Agent)正在开发中...... Token用完，我就会死。"） |
 
 ---
 
-## 9. 关键代码路径速查
+## 10. 关键代码路径速查
 
 | 模块 | 页面 | 组件 | 配置 |
 |------|------|------|------|
 | 分享主页 | `src/pages/share/index.astro` | WallpaperGallery / ReadingGallery / PlaylistPicker | backgroundWallpaper / readingConfig / musicConfig |
-| 全部壁纸 | `src/pages/share/all.astro` | AllImagesGallery（瀑布流） | —（自动扫描文件夹） |
+| 全部壁纸 | `src/pages/share/all.astro` | AllImagesGallery（三列瀑布流） | —（自动扫描 `src/assets/images/wallpapers/`） |
 | 阅读详情 | `src/pages/share/reading.astro` | ReadingGallery | readingConfig |
 | 项目展示 | `src/pages/projects/index.astro` | — | projectsConfig |
 | 收藏夹 | `src/pages/bookmarks/index.astro` | — | bookmarksConfig |
+| 相册列表 | `src/pages/gallery/index.astro` | AlbumCard（三列网格 + 标签筛选） | galleryConfig |
+| 相册详情 | `src/pages/gallery/[album].astro` | 瀑布流 + Lightbox | —（扫描 `public/gallery/<id>/`） |
 | 首页布局 | `src/layouts/MainGridLayout.astro` | Navbar / Footer / SideBar / Live2D | 全部 config |
 | 根布局 | `src/layouts/Layout.astro` | — | favicon / SEO |
 
@@ -258,7 +315,7 @@ category: 分类名称
 
 ---
 
-## 10. 本地开发
+## 11. 本地开发
 
 ```bash
 pnpm dev          # 开发服务器 http://localhost:4321
@@ -286,7 +343,7 @@ pnpm new-post     # 创建新文章
 
 ---
 
-## 11. 设计约束速查
+## 12. 设计约束速查
 
 - 色相系统：`--hue` CSS 变量 → OKLCH 全局主题色
 - 壁纸色相跟随：`backgroundWallpaper.wallpaperHue.followImage`
