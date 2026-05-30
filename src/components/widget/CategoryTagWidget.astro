@@ -22,7 +22,7 @@ const categoryTagComponent = [
 
 const collapseThreshold = categoryTagComponent?.responsive?.collapseThreshold;
 const isCollapsed = collapseThreshold
-	? (categories.length + tags.length) > collapseThreshold
+	? categories.length + tags.length > collapseThreshold
 	: false;
 
 interface Props {
