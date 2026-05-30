@@ -129,7 +129,7 @@ const columnWidth = galleryConfig.columnWidth || 240;
           <EncryptedContent password={albumMeta.password} slug={albumMeta.id} hint={albumMeta.passwordHint}>
             <div
               class="gallery-masonry"
-              style={`column-count: 3; column-gap: 0.75rem; --col-width: ${columnWidth}px;`}
+              style={`column-gap: 0.75rem; --col-width: ${columnWidth}px;`}
             >
               {photos.map((photo) => (
                 <PhotoCard src={photo} albumId={albumMeta.id} />
@@ -139,7 +139,7 @@ const columnWidth = galleryConfig.columnWidth || 240;
         ) : (
           <div
             class="gallery-masonry"
-            style={`column-count: 3; column-gap: 0.75rem; --col-width: ${columnWidth}px;`}
+            style={`column-gap: 0.75rem; --col-width: ${columnWidth}px;`}
           >
             {photos.map((photo) => (
               <PhotoCard src={photo} albumId={albumMeta.id} />
@@ -156,6 +156,11 @@ const columnWidth = galleryConfig.columnWidth || 240;
   </div>
 
   <style is:global>
+    /* 移动端默认 2 列 */
+    .gallery-masonry {
+      column-count: 2;
+    }
+    /* 640px+ 使用自动列宽 */
     @media (min-width: 640px) {
       .gallery-masonry {
         column-width: var(--col-width, 240px) !important;
