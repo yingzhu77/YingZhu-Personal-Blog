@@ -1,0 +1,153 @@
+---
+import ButtonLink from "@/components/common/ButtonLink.astro";
+import ButtonTag from "@/components/common/ButtonTag.astro";
+import WidgetLayout from "@/components/common/WidgetLayout.astro";
+import { sidebarLayoutConfig } from "@/config";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+import { getCategoryList, getTagList } from "@/utils/content-utils";
+import { getTagUrl, url } from "@/utils/url-utils";
+
+const categories = await getCategoryList();
+const tags = await getTagList();
+
+const COLLAPSED_HEIGHT = "7.5rem";
+
+// 从配置中获取折叠阈值
+const categoryTagComponent = [
+	...sidebarLayoutConfig.leftComponents,
+	...sidebarLayoutConfig.rightComponents,
+	...sidebarLayoutConfig.mobileBottomComponents,
+].find((c) => c.type === "categoryTag");
+
+const collapseThreshold = categoryTagComponent?.responsive?.collapseThreshold;
+const isCollapsed = collapseThreshold
+	? (categories.length + tags.length) > collapseThreshold
+	: false;
+
+interface Props {
+	class?: string;
+	style?: string;
+}
+const className = Astro.props.class;
+const style = Astro.props.style;
+
+const archivePath = url("/archive/");
+---
+
+<WidgetLayout name={i18n(I18nKey.categories)} id="category-tag" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT}
+                class={className} style={style}
+>
+	<!-- Tab 切换栏 - 半透明玻璃效果 -->
+	<div class="category-tag-tabs flex gap-1 mb-3 p-0.5 rounded-lg backdrop-blur-md">
+		<button
+			class="category-tag-tab active flex-1 px-2 py-1.5 text-xs font-medium rounded-md transition-all duration-200"
+			data-tab="categories"
+			onclick="switchCategoryTagTab('categories')"
+		>
+			{i18n(I18nKey.categories)}
+		</button>
+		<button
+			class="category-tag-tab flex-1 px-2 py-1.5 text-xs font-medium rounded-md transition-all duration-200"
+			data-tab="tags"
+			onclick="switchCategoryTagTab('tags')"
+		>
+			{i18n(I18nKey.tags)}
+		</button>
+	</div>
+
+	<!-- 分类内容 -->
+	<div id="category-tag-content-categories" class="category-tag-content">
+		<div id="categories-widget-data" class="hidden" data-archive-path={archivePath}></div>
+		{categories.map((c) =>
+			<ButtonLink
+				url={c.url}
+				badge={String(c.count)}
+				label={`View all posts in the ${c.name.trim()} category`}
+			>
+				{c.name.trim()}
+			</ButtonLink>
+		)}
+	</div>
+
+	<!-- 标签内容 -->
+	<div id="category-tag-content-tags" class="category-tag-content hidden">
+		<div class="flex gap-2 flex-wrap">
+			{tags.map(t => (
+				<ButtonTag href={getTagUrl(t.name)} label={`View all posts with the ${t.name.trim()} tag`}>
+					{t.name.trim()}
+				</ButtonTag>
+			))}
+		</div>
+	</div>
+</WidgetLayout>
+
+<style>
+	.category-tag-tabs {
+		background: color-mix(in srgb, var(--card-bg) 60%, transparent);
+		border: 1px solid color-mix(in srgb, var(--line-divider) 50%, transparent);
+	}
+	.category-tag-tab {
+		cursor: pointer;
+		border: none;
+		outline: none;
+		color: var(--btn-content);
+		opacity: 0.7;
+	}
+	.category-tag-tab:hover {
+		opacity: 0.9;
+	}
+	.category-tag-tab.active {
+		background: color-mix(in srgb, var(--primary) 20%, transparent);
+		color: var(--primary);
+		opacity: 1;
+		backdrop-filter: blur(8px);
+	}
+	.category-tag-tab:focus-visible {
+		box-shadow: 0 0 0 2px var(--primary);
+	}
+</style>
+
+<script is:inline>
+  function switchCategoryTagTab(tab) {
+	// 更新 Tab 样式
+	document.querySelectorAll('.category-tag-tab').forEach(btn => {
+		if (btn.dataset.tab === tab) {
+			btn.classList.add('active');
+		} else {
+			btn.classList.remove('active');
+		}
+	});
+
+	// 切换内容
+	document.querySelectorAll('.category-tag-content').forEach(el => {
+		el.classList.add('hidden');
+	});
+	document.getElementById('category-tag-content-' + tab)?.classList.remove('hidden');
+  }
+
+  function updateBannerTitleFromCategory() {
+    const data = document.getElementById("categories-widget-data");
+    if (!data) return;
+
+    const archivePath = (data.getAttribute("data-archive-path") || "/archive").replace(/\/$/, "");
+    const pathname = window.location.pathname.replace(/\/$/, "");
+    const isArchive = pathname === archivePath;
+
+    if (!isArchive) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const activeCategory = params.get("category") || "";
+
+    if (activeCategory) {
+      const bannerTitle = document.querySelector(".banner-page-title-text");
+      if (bannerTitle) {
+        bannerTitle.textContent = decodeURIComponent(activeCategory);
+      }
+    }
+  }
+
+  updateBannerTitleFromCategory();
+  document.addEventListener("astro:page-load", updateBannerTitleFromCategory);
+  document.addEventListener("swup:contentReplaced", updateBannerTitleFromCategory);
+</script>

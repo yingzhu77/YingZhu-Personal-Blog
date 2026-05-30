@@ -26,17 +26,54 @@ const config = {
   <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
   <script type="module" is:inline define:vars={{ config }}>
     const loading = document.getElementById('waline-loading');
+
+    function hideLoading() {
+      if (loading) {
+        loading.style.display = 'none';
+      }
+    }
+
+    // 立即隐藏自定义加载动画
+    hideLoading();
+
     import('https://unpkg.com/@waline/client@v3/dist/waline.js').then(({ init }) => {
       init(config);
+
+      // 监听 Waline 容器变化，隐藏 Waline 自身的加载动画
       const observer = new MutationObserver(() => {
         const walineEl = document.getElementById('waline');
-        if (walineEl && walineEl.children.length > 0) {
-          if (loading) loading.style.display = 'none';
+        if (!walineEl) return;
+
+        // 检测 Waline 是否加载完成（出现评论卡片或空状态）
+        const hasContent = walineEl.querySelector('.wl-card, .wl-empty');
+        const hasLoading = walineEl.querySelector('.wl-loading');
+
+        if (hasContent || hasLoading) {
+          // 如果有内容或加载完成，隐藏 Waline 的加载动画
+          if (hasLoading) {
+            hasLoading.style.display = 'none';
+          }
           observer.disconnect();
         }
       });
+
       const walineEl = document.getElementById('waline');
-      if (walineEl) observer.observe(walineEl, { childList: true });
+      if (walineEl) {
+        observer.observe(walineEl, { childList: true, subtree: true });
+      }
+
+      // 超时保护：3秒后强制隐藏所有加载动画
+      setTimeout(() => {
+        hideLoading();
+        const walineLoading = document.querySelector('#waline .wl-loading');
+        if (walineLoading) {
+          walineLoading.style.display = 'none';
+        }
+        observer.disconnect();
+      }, 3000);
+    }).catch(() => {
+      // 加载失败时隐藏加载动画
+      hideLoading();
     });
   </script>
 </div>

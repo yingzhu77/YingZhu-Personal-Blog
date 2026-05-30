@@ -65,8 +65,8 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			showOnPostPage: true,
 		},
 		{
-			// 组件类型：分类组件
-			type: "categories",
+			// 组件类型：分类标签合并组件（Tab 切换）
+			type: "categoryTag",
 			// 是否启用该组件
 			enable: true,
 			// 组件位置
@@ -75,23 +75,8 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			showOnPostPage: true,
 			// 响应式配置
 			responsive: {
-				// 折叠阈值：当分类数量超过>5个时自动折叠
-				collapseThreshold: 5,
-			},
-		},
-		{
-			// 组件类型：标签组件
-			type: "tags",
-			// 是否启用该组件
-			enable: true,
-			// 组件位置
-			position: "sticky",
-			// 是否在文章详情页显示
-			showOnPostPage: true,
-			// 响应式配置
-			responsive: {
-				// 折叠阈值：当标签数量超过>10个时自动折叠
-				collapseThreshold: 10,
+				// 折叠阈值：当分类+标签总数超过15个时自动折叠
+				collapseThreshold: 15,
 			},
 		},
 		{
@@ -169,29 +154,16 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			showOnPostPage: true,
 		},
 		{
-			// 组件类型：分类组件
-			type: "categories",
+			// 组件类型：分类标签合并组件（Tab 切换）
+			type: "categoryTag",
 			// 是否启用该组件
 			enable: true,
 			// 是否在文章详情页显示
 			showOnPostPage: true,
 			// 响应式配置
 			responsive: {
-				// 折叠阈值：当分类数量超过6个时自动折叠
-				collapseThreshold: 6,
-			},
-		},
-		{
-			// 组件类型：标签组件
-			type: "tags",
-			// 是否启用该组件
-			enable: true,
-			// 是否在文章详情页显示
-			showOnPostPage: true,
-			// 响应式配置
-			responsive: {
-				// 折叠阈值：当标签数量超过10个时自动折叠
-				collapseThreshold: 10,
+				// 折叠阈值：当分类+标签总数超过15个时自动折叠
+				collapseThreshold: 15,
 			},
 		},
 	],
