@@ -11,14 +11,7 @@
 - **GitHub**: [yingzhu77](https://github.com/yingzhu77)
 - **邮箱**: [YingZhu77@outlook.com](mailto:YingZhu77@outlook.com)
 
-## 赞助支持
-
-如果我的内容或开源项目对你有帮助，欢迎通过以下方式支持我：
-
-- **GitHub Sponsors**: [@yingzhu77](https://github.com/sponsors/yingzhu77)
-- 也欢迎给开源项目点个 Star，这是最好的精神支持！
-
-每一份支持都是我持续创作和开源的动力。
+欢迎给开源项目点个 Star，这是最好的精神支持！
 
 ---
 
