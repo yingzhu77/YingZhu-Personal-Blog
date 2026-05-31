@@ -185,6 +185,8 @@ function handleKeydown(e: KeyboardEvent, pl: PlaylistCardData) {
   /* ── 唱片容器 ── */
   .record-wrap {
     position: relative; aspect-ratio: 1 / 1; border-radius: 50%;
+    overflow: hidden; /* 防止旋转时超出边界 */
+    contain: layout style paint; /* 隔离布局，防止影响其他元素 */
   }
 
   /* ── 旋转层：封面填满整圆 ── */
@@ -195,6 +197,8 @@ function handleKeydown(e: KeyboardEvent, pl: PlaylistCardData) {
       0 0 0 5px rgba(0,0,0,0.08),
       0 4px 24px rgba(0,0,0,0.3);
     will-change: transform;
+    backface-visibility: hidden; /* 防止旋转时闪烁 */
+    -webkit-backface-visibility: hidden;
   }
   .record-disc.spinning {
     animation: record-spin 7s linear infinite;
