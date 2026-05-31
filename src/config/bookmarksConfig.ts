@@ -45,7 +45,8 @@ export const bookmarks: Bookmark[] = [
 	{
 		title: "ECC (Everything Claude Code)",
 		url: "https://github.com/affaan-m/ECC",
-		description: "Claude Code 等 AI 编程工具的增强系统，提供 249 个技能、63 个子代理、记忆持久化与安全扫描。",
+		description:
+			"Claude Code 等 AI 编程工具的增强系统，提供 249 个技能、63 个子代理、记忆持久化与安全扫描。",
 		category: "开源项目",
 	},
 ];
