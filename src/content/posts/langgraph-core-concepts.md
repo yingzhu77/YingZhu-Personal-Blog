@@ -4,7 +4,7 @@ published: 2026-05-10
 pinned: false
 description: 从零理解 LangGraph 的架构哲学：它不是又一个 LLM 框架，而是一套 agent 编排运行时。本文用通俗语言拆解 State、Nodes、Edges 三大概念，带你理解"图"为什么是构建可靠 AI Agent 的最优抽象。
 tags: [LangGraph, AI, Agent, 架构, Elysia♪]
-category: AI 技术
+category: AIGC
 ---
 
 > **（以下内容由AI拉取最新文档生成，注意甄别）**

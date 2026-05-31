@@ -21,8 +21,9 @@ const categoryTagComponent = [
 ].find((c) => c.type === "categoryTag");
 
 const collapseThreshold = categoryTagComponent?.responsive?.collapseThreshold;
+// 只根据分类数量判断是否折叠，标签数量不影响
 const isCollapsed = collapseThreshold
-	? categories.length + tags.length > collapseThreshold
+	? categories.length > collapseThreshold
 	: false;
 
 interface Props {
@@ -45,7 +46,7 @@ const archivePath = url("/archive/");
 			data-tab="categories"
 			onclick="switchCategoryTagTab('categories')"
 		>
-			{i18n(I18nKey.categories)}
+			{i18n(I18nKey.categoryItems)}
 		</button>
 		<button
 			class="category-tag-tab flex-1 px-2 py-1.5 text-xs font-medium rounded-md transition-all duration-200"

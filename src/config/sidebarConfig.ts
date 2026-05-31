@@ -75,8 +75,8 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			showOnPostPage: true,
 			// 响应式配置
 			responsive: {
-				// 折叠阈值：当分类+标签总数超过15个时自动折叠
-				collapseThreshold: 15,
+				// 折叠阈值：当分类数量超过6个时自动折叠
+				collapseThreshold: 6,
 			},
 		},
 		{
@@ -162,8 +162,8 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			showOnPostPage: true,
 			// 响应式配置
 			responsive: {
-				// 折叠阈值：当分类+标签总数超过15个时自动折叠
-				collapseThreshold: 15,
+				// 折叠阈值：当分类数量超过6个时自动折叠
+				collapseThreshold: 6,
 			},
 		},
 	],

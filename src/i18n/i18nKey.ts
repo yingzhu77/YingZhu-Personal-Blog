@@ -16,6 +16,7 @@ enum I18nKey {
 
 	tags = "tags",
 	categories = "categories",
+	categoryItems = "categoryItems",
 	recentPosts = "recentPosts",
 	postList = "postList",
 	tableOfContents = "tableOfContents",

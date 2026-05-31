@@ -1,6 +1,19 @@
 import { siteConfig } from "../config";
 
 export function formatDateToYYYYMMDD(date: Date): string {
+	// 使用配置的时区格式化日期，避免 UTC 时间导致的日期偏移
+	if (siteConfig.timezone) {
+		const options: Intl.DateTimeFormatOptions = {
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+			timeZone: siteConfig.timezone,
+		};
+		const parts = new Intl.DateTimeFormat("en-CA", options).formatToParts(date);
+		const get = (type: Intl.DateTimeFormatPartTypes) =>
+			parts.find((p) => p.type === type)?.value || "";
+		return `${get("year")}-${get("month")}-${get("day")}`;
+	}
 	return date.toISOString().substring(0, 10);
 }
 
