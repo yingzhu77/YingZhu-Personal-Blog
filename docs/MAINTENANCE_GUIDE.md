@@ -1,6 +1,6 @@
 # 博客维护指南
 
-> 快速查找添加/修改各类内容的位置与步骤。最后更新：2026-05-22
+> 快速查找添加/修改各类内容的位置与步骤。最后更新：2026-06-01
 
 ---
 
@@ -78,7 +78,60 @@ category: 分类名称
 
 ---
 
-## 3. 阅读分享
+## 3. 侧边栏系统
+
+**配置文件**：`src/config/sidebarConfig.ts`
+
+### 布局模式
+
+| 模式 | 说明 |
+|------|------|
+| `left` | 仅显示左侧边栏 |
+| `right` | 仅显示右侧边栏 |
+| `both` | 双侧边栏，1280px+ 同时显示，769-1279px 根据 `tabletSidebar` 配置显示其中一侧 |
+
+### 当前配置
+
+**左侧边栏**：
+- Profile（顶部）— 用户资料，带关闭按钮
+- Announcement（顶部）— 公告
+- Music（sticky）— 音乐播放器
+- CategoryTag（sticky）— 分类+标签合并组件，Tab 切换
+
+**右侧边栏**：
+- Stats（顶部）— 站点统计
+- Calendar（sticky）— 日历组件
+- SidebarTOC（sticky）— 文章目录（仅文章页显示）
+
+**移动端底部**：
+- Profile — 用户资料
+- CategoryTag — 分类+标签
+
+### CategoryTag 组件
+
+将分类（Categories）和标签（Tags）合并为一个组件，使用 Tab 切换：
+
+- 默认显示「类别」Tab，点击切换到「标签」
+- 半透明玻璃效果 Tab 栏，随背景色相变化
+- 折叠阈值：当分类数量超过 6 个时自动折叠
+- 配置：`responsive.collapseThreshold`
+
+### 响应式行为
+
+- **< 768px**：隐藏侧边栏，显示 Mobile Bottom 组件
+- **769-1279px**：根据 `tabletSidebar` 配置显示一侧边栏
+  - 文章页优先显示右侧栏（TOC）
+- **≥ 1280px**：显示双侧边栏
+
+### Profile 关闭按钮
+
+- 位置：右下角
+- 行为：会话级别，刷新页面后重新显示
+- 实现：直接隐藏 DOM，不使用 localStorage
+
+---
+
+## 4. 阅读分享
 
 **配置文件**：`src/config/readingConfig.ts`
 
@@ -213,7 +266,7 @@ category: 分类名称
 }
 ```
 
-**当前收藏夹**（6 项）：mirrorchyan、B站 GTP 谱分享 ×2、Claude Code 教程、guitarChord、MSST WebUI
+**当前收藏夹**（7 项）：mirrorchyan、B站 GTP 谱分享 ×2、Claude Code 教程、guitarChord、MSST WebUI、ECC
 
 **页面**：`src/pages/bookmarks/index.astro` — 卡片列表，按分类分组展示。
 
@@ -256,7 +309,7 @@ category: 分类名称
 ### 页面
 
 - **相册列表**：`/gallery/` — 三列网格卡片，支持标签筛选
-- **相册详情**：`/gallery/<id>/` — 瀑布流展示照片，支持 Lightbox 预览
+- **相册详情**：`/gallery/<id>/` — 瀑布流展示照片（移动端 2 列，640px+ 自动列宽），支持 Lightbox 预览
 - **全部壁纸**：`/share/all/` — 自动扫描 `src/assets/images/wallpapers/` 目录，三列瀑布流布局
 
 ### 图片路径说明
@@ -351,3 +404,42 @@ pnpm new-post     # 创建新文章
 - 客户端指令：`client:idle`（低优先级）/ `client:visible`（折叠下方）/ `client:load`（首屏必需）
 - 正文约束：≥16px，行高 1.5-1.75，桌面行宽 60-75 字符
 - 所有交互控件 ≥44×44px，hover/focus-visible/active/disabled 四态
+
+---
+
+## 13. 变更日志
+
+### 2026-06-01
+
+**侧边栏系统重构**
+- 新增 CategoryTag 合并组件，将分类和标签合并为 Tab 切换
+- 半透明玻璃效果 Tab 栏，随背景色相变化
+- 折叠阈值改为 6，只根据分类数量判断
+- Tab 名称「分类」改为「类别」避免歧义
+
+**响应式优化**
+- 平板端文章页优先显示右侧栏 TOC
+- Mobile Bottom 组件精简为 Profile + CategoryTag
+- Gallery 瀑布流移动端改为 2 列
+
+**组件优化**
+- Profile 组件添加关闭按钮（右下角，会话级别）
+- 修复 Waline 评论加载动画问题
+- 修复分享页唱片旋转导致进度条抖动
+
+**内容更新**
+- 新增文章「预求身：选择、杀死可能性与成长的阵痛」
+- 四篇 LangGraph 文章分类改为 AIGC
+- 收藏夹添加 ECC 项目
+- 友链页面添加邮箱地址
+
+**Bug 修复**
+- 修复日期格式化时区问题（使用 Asia/Shanghai）
+- 修复日语和俄语翻译缺失 categoryItems 字段
+
+---
+
+## 14. 已知问题
+
+- 本地开发时主页图标偶尔不显示（远程正常，疑似缓存问题）
+- 5.30.1.md 文件为待发布文章占位

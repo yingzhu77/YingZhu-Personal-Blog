@@ -42,4 +42,10 @@ export const bookmarks: Bookmark[] = [
 		description: "AI 分离人声/伴奏/乐器轨，不求人，亲测好用。",
 		category: "工具",
 	},
+	{
+		title: "ECC (Everything Claude Code)",
+		url: "https://github.com/affaan-m/ECC",
+		description: "Claude Code 等 AI 编程工具的增强系统，提供 249 个技能、63 个子代理、记忆持久化与安全扫描。",
+		category: "开源项目",
+	},
 ];
