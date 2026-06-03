@@ -54,6 +54,14 @@ export const projects: Project[] = [
 		tags: ["Astro", "Svelte", "Tailwind CSS", "Waline", "Cloudflare"],
 	},
 	{
+		name: "My Claude Code Skills",
+		description:
+			"Claude Code Skills 个人集合。当前包含 novel-writer——基于 180 章、114 万字符科幻网文实战经验提炼的 AI 长篇小说写作工作流 skill。四阶段流程（写作→审稿→一致性检查→修订）、结尾轮换表、身体反应备选库、8 种反模式识别，防止 AI 在长篇创作中犯系统性低级错误。",
+		url: "https://github.com/yingzhu77/my-skills",
+		language: "Markdown",
+		tags: ["Claude Code", "Skill", "AI", "写作", "小说"],
+	},
+	{
 		name: "吉他和弦速查",
 		description:
 			"面向吉他初学者的极简 uni-app 微信小程序。点击指板弦位快速查询单音和常见和弦，支持和弦识别与中文解释、内置 Standard/Drop D/半音降/DADGAD/Open G 五种调弦模式、自定义空弦音本地缓存，纯前端离线可用，无登录无后端。",
