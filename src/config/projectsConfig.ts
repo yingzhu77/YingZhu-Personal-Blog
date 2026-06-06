@@ -2,6 +2,7 @@ export interface Project {
 	name: string;
 	description: string;
 	url: string;
+	website?: string; // 项目官网 URL
 	logo?: string; // 项目 logo URL，无 logo 则不显示
 	stars?: number;
 	language?: string;
@@ -68,5 +69,15 @@ export const projects: Project[] = [
 		url: "https://github.com/yingzhu77/guitar-chord-finder",
 		language: "TypeScript",
 		tags: ["uni-app", "Vue3", "Vite", "微信小程序", "Guitar"],
+	},
+	{
+		name: "AI Novel to Screenplay",
+		description:
+			"AI 驱动的小说转剧本工具。智能章节识别（中/英/Markdown）、DeepSeek V4 Flash 转换、SSE 流式逐章进度、角色关系图可视化、原文并排对比、YAML/JSON 双格式导出、S3 云端存储，支持 .txt/.md/.docx 多文件上传。",
+		url: "https://github.com/yingzhu77/ai-novel-to-screenplay",
+		website: "https://aiscreenplay.yingzhu.xyz/",
+		logo: "/assets/images/projects/novel-to-screenplay-logo.webp",
+		language: "TypeScript",
+		tags: ["Next.js", "React", "Tailwind CSS", "DeepSeek", "AI", "SSE"],
 	},
 ];

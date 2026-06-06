@@ -6,7 +6,7 @@ import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 
 const title = i18n(I18nKey.bookmarks);
-const description = "我收藏的工具、教程与开源项目";
+const description = "我收藏的工具、教程、开源项目与趣味站点";
 ---
 
 <MainGridLayout title={title} description={description}>
@@ -29,7 +29,7 @@ const description = "我收藏的工具、教程与开源项目";
           </div>
         ) : (
           <div class="flex flex-col gap-6">
-            {(["工具", "教程", "开源项目"] as const).map((category) => {
+            {(["工具", "教程", "开源项目", "趣味"] as const).map((category) => {
               const items = bookmarks.filter((b) => b.category === category);
               if (items.length === 0) return null;
               return (
@@ -50,6 +50,8 @@ const description = "我收藏的工具、教程与开源项目";
                             <Icon name="material-symbols:build" class="text-[1.15rem]" />
                           ) : item.category === "教程" ? (
                             <Icon name="material-symbols:book-2-outline" class="text-[1.15rem]" />
+                          ) : item.category === "趣味" ? (
+                            <Icon name="material-symbols:mood" class="text-[1.15rem]" />
                           ) : (
                             <Icon name="material-symbols:code-blocks" class="text-[1.15rem]" />
                           )}

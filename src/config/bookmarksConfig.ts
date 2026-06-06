@@ -2,7 +2,7 @@ export interface Bookmark {
 	title: string;
 	url: string;
 	description: string;
-	category: "工具" | "教程" | "开源项目";
+	category: "工具" | "教程" | "开源项目" | "趣味";
 }
 
 export const bookmarks: Bookmark[] = [
@@ -48,5 +48,11 @@ export const bookmarks: Bookmark[] = [
 		description:
 			"Claude Code 等 AI 编程工具的增强系统，提供 249 个技能、63 个子代理、记忆持久化与安全扫描。",
 		category: "开源项目",
+	},
+	{
+		title: "黑塔转圈圈",
+		url: "https://duiqt.github.io/herta_kuru/",
+		description: "黑塔转圈圈（？）",
+		category: "趣味",
 	},
 ];
