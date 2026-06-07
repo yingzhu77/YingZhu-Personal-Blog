@@ -5,7 +5,7 @@ export const announcementConfig: AnnouncementConfig = {
 	title: "公告",
 
 	// 公告内容
-	content: "(Agent)正在开发中...... Token用完，我就会死。",
+	content: "https://acg.yingzhu.xyz/，来看看吧！",
 
 	// 是否允许用户关闭公告
 	closable: true,
@@ -14,10 +14,10 @@ export const announcementConfig: AnnouncementConfig = {
 		// 启用链接
 		enable: true,
 		// 链接文本
-		text: "了解更多",
+		text: "去看看",
 		// 链接 URL
-		url: "/about/",
-		// 内部链接
-		external: false,
+		url: "https://acg.yingzhu.xyz/",
+		// 外部链接
+		external: true,
 	},
 };
