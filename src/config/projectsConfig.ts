@@ -71,6 +71,16 @@ export const projects: Project[] = [
 		tags: ["uni-app", "Vue3", "Vite", "微信小程序", "Guitar"],
 	},
 	{
+		name: "Personal Hot Monitor",
+		description:
+			"AI 驱动的游戏/ACG 资讯聚合面板，自动采集多源内容，智能分类定级，实时推送情报。",
+		url: "https://github.com/yingzhu77/personal-hot-monitor",
+		website: "https://acg.yingzhu.xyz/",
+		logo: "/assets/images/projects/hot-monitor-logo.webp",
+		language: "TypeScript",
+		tags: ["AI", "ACG", "资讯聚合", "Docker", "TypeScript"],
+	},
+	{
 		name: "AI Novel to Screenplay",
 		description:
 			"AI 驱动的小说转剧本工具。智能章节识别（中/英/Markdown）、DeepSeek V4 Flash 转换、SSE 流式逐章进度、角色关系图可视化、原文并排对比、YAML/JSON 双格式导出、S3 云端存储，支持 .txt/.md/.docx 多文件上传。",
