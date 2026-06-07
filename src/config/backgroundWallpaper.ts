@@ -80,11 +80,11 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 					subtitle: "一尊还酹江月",
 				},
 				{
-					title: "人是会思考的芦苇，",
+					title: "人是会思考的芦苇",
 					subtitle: "我在这里拾起思想的碎片",
 				},
 				{
-					title: "当我摘下一张面具时，",
+					title: "当我摘下一张面具时",
 					subtitle: "却又不知不觉带上了另一张",
 				},
 			],
