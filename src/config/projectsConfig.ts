@@ -71,10 +71,10 @@ export const projects: Project[] = [
 		tags: ["uni-app", "Vue3", "Vite", "微信小程序", "Guitar"],
 	},
 	{
-		name: "Personal Hot Monitor",
+		name: "ACG Pulse",
 		description:
 			"AI 驱动的游戏/ACG 资讯聚合面板，自动采集多源内容，智能分类定级，实时推送情报。",
-		url: "https://github.com/yingzhu77/personal-hot-monitor",
+		url: "https://github.com/yingzhu77/ACG-Pulse",
 		website: "https://acg.yingzhu.xyz/",
 		logo: "/assets/images/projects/hot-monitor-logo.webp",
 		language: "TypeScript",
