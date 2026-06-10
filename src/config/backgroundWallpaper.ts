@@ -87,6 +87,10 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 					title: "当我摘下一张面具时",
 					subtitle: "却又不知不觉带上了另一张",
 				},
+				{
+					title: "惜涓滴于将竭",
+					subtitle: "失江海于自流",
+				},
 			],
 		},
 		// 导航栏配置
