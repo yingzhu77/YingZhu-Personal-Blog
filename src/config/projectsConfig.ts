@@ -90,4 +90,14 @@ export const projects: Project[] = [
 		language: "TypeScript",
 		tags: ["Next.js", "React", "Tailwind CSS", "DeepSeek", "AI", "SSE"],
 	},
+	{
+		name: "VoiceCanvas",
+		description:
+			"语音驱动的 SVG 矢量绘图工具。语音指令经 ASR 转写后分解为结构化绘图计划，再执行为可编辑的 SVG 图元。支持混合解析（本地 + LLM 回退）、上下文感知编辑（\"把刚才那个矩形改成绿色\"）、13 种语义模板、自动布局（流程图/思维导图/时间线）、SVG/PNG 导出、撤销重做。",
+		url: "https://github.com/yingzhu77/Voicecanvas",
+		website: "https://draw.yingzhu.xyz",
+		logo: "/assets/images/projects/voicecanvas-logo.webp",
+		language: "TypeScript",
+		tags: ["Next.js", "SVG", "Voice", "ASR", "AI", "MiMo"],
+	},
 ];
