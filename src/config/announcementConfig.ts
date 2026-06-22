@@ -5,7 +5,7 @@ export const announcementConfig: AnnouncementConfig = {
 	title: "公告",
 
 	// 公告内容
-	content: "今日反思：惜涓滴于将竭，失江海于自流。 （Agent）持续开发中...",
+	content: "这里只有期末周的一具尸体...",
 
 	// 是否允许用户关闭公告
 	closable: true,
