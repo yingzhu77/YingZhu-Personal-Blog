@@ -3,7 +3,13 @@
 > 基于 [Firefly](https://github.com/CuteLeaf/Firefly) (源自 [Fuwari](https://github.com/saicaca/fuwari)) 的二次开发记录  
 > 详细维护指南：[MAINTENANCE_GUIDE.md](./MAINTENANCE_GUIDE.md)
 
-## 2026-05-22 最新
+## 2026-06-23 最新
+
+- 新增博文：「深度体验SillyTavern（酒馆）后的一些碎碎念」
+- 全部壁纸页维持三列瀑布流，并按文件名稳定排序
+- 文档职责整理：本文件作为唯一项目变更日志，维护指南不再重复记录变更历史
+
+## 2026-05-22
 
 - 新增博文：「小满，对于永恒的一些思考」+「AI Coding 总结的部分经验与复盘」
 - 相册功能：新增「人生得闲」相册（`public/gallery/ren-sheng-de-xian/`），支持标签筛选 + 三列网格布局
