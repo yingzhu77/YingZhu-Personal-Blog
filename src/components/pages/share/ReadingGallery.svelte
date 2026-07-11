@@ -7,6 +7,7 @@ interface BookItem {
 	author: string;
 	cover: string;
 	review: string;
+	highlight?: string;
 	link?: string;
 }
 
@@ -83,6 +84,9 @@ function handleKeydown(e: KeyboardEvent) {
         <p class="detail-author">{selectedBook.author}</p>
         <div class="detail-divider"></div>
         <p class="detail-review">{selectedBook.review || "暂无评价"}</p>
+        {#if selectedBook.highlight}
+          <p class="detail-review detail-review-highlight">{selectedBook.highlight}</p>
+        {/if}
         {#if selectedBook.link}
           <a href={selectedBook.link} target="_blank" rel="noopener noreferrer" class="detail-link">
             了解更多 →
@@ -128,6 +132,7 @@ function handleKeydown(e: KeyboardEvent) {
   .detail-author { font-size: 0.8125rem; color: var(--color-text-muted, #999); margin: 0; }
   .detail-divider { width: 2rem; height: 2px; background: var(--primary); margin: 1rem auto; border-radius: 1px; }
   .detail-review { font-size: 0.875rem; line-height: 1.75; text-align: left; color: var(--color-text, #333); white-space: pre-line; }
+  .detail-review-highlight { margin-top: 1rem; font-weight: 700; }
   :global(.dark) .detail-review { color: #ccc; }
   .detail-link { display: inline-block; margin-top: 1rem; font-size: 0.8125rem; color: var(--primary); text-decoration: none; }
   .detail-link:hover { text-decoration: underline; }

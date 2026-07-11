@@ -5,7 +5,8 @@ export const announcementConfig: AnnouncementConfig = {
 	title: "公告",
 
 	// 公告内容
-	content: "这里只有期末周的一具尸体...",
+	content:
+		"这时他领悟到那种缺憾的感觉从何而来。这是一种作为世间万物基础的烦愁，每样东西、每种现象里无所不在的烦愁，这烦愁自古以来绵绵不绝，它源于不能一下子把所有的事都弄明白。——《太古和其他的时间》",
 
 	// 是否允许用户关闭公告
 	closable: true,

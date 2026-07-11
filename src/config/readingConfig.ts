@@ -3,10 +3,20 @@ export interface BookItem {
 	author: string;
 	cover: string;
 	review: string;
+	highlight?: string;
 	link?: string;
 }
 
 export const books: BookItem[] = [
+	{
+		title: "太古和其他的时间",
+		author: "奥尔加·托卡尔丘克",
+		cover: "/assets/reading/太古和其他的时间.png",
+		review:
+			"我不知道该如何评价这一本书，书里的事离现实似乎很近又似乎很远。人被困在这些时间里，这是人能感知到时间而不断前进所付出的必要代价吧。",
+		highlight:
+			"《太古和其他的时间》是一部以虚构村庄“太古”为中心，通过多视角叙事探索时间、生命与历史的魔幻现实主义小说。",
+	},
 	{
 		title: "工作、消费主义和新穷人",
 		author: "齐格蒙特·鲍曼",
