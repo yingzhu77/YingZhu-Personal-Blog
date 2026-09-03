@@ -126,7 +126,7 @@ function handleKeydown(e: KeyboardEvent, pl: PlaylistCardData) {
               <img src={coverSrc(pl)} alt={pl.name} class="record-cover" loading="lazy" />
             {:else}
               <div class="record-placeholder">
-                <Icon icon="material-symbols:album-rounded" class="text-[2rem] opacity-25" />
+                <Icon icon="material-symbols:album" class="text-[2rem] opacity-25" />
               </div>
             {/if}
             <!-- 唱片沟槽纹理叠加层 -->

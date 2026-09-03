@@ -44,12 +44,6 @@ for (const [filePath, loader] of imageEntries) {
 		format: "webp",
 		quality: 80,
 	});
-	const full = await getImage({
-		src: img,
-		width: 1920,
-		format: "webp",
-		quality: 85,
-	});
 
 	wallpaperItems.push({
 		name: fileName,
@@ -57,7 +51,8 @@ for (const [filePath, loader] of imageEntries) {
 		desktopPath: `assets/images/wallpapers/${filePath.split("/").pop()}`,
 		mobilePath: `assets/images/wallpapers/${filePath.split("/").pop()}`,
 		thumbnailUrl: thumb.src,
-		fullUrl: full.src,
+		// Keep the original asset for the lightbox; only the listing thumbnail is optimized.
+		fullUrl: img.src,
 	});
 }
 ---
