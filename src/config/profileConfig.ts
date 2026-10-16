@@ -12,7 +12,7 @@ export const profileConfig: ProfileConfig = {
 	name: "Ying Zhu",
 
 	// 个人签名
-	bio: "萤烛 · ai-coding, 游戏，音乐与书",
+	bio: "All the things you want it to be. Then, all the things you wished you never wished for. It was the delicious itch you go to scratch but find it's under the skin. You can't reach it. So the delicious itch becomes unbearable. Told you what you most want, is what you most can't have. And what you most can't have, is what you already had, and lost. It was the song of all the promises I failed to keep. And it told me I don't really want to go home.",
 
 	// 链接配置
 	// 已经预装的图标集：fa7-brands，fa7-regular，fa7-solid，material-symbols，simple-icons
