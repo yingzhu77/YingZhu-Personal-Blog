@@ -40,6 +40,10 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 			"https://api.injahow.cn/meting/?server=:server&type=:type&id=:id",
 			"https://api.moeyao.cn/meting/?server=:server&type=:type&id=:id",
 		],
+		audioApis: [
+			"https://api.injahow.cn/meting/?server=:server&type=url&id=:id",
+			"https://api.moeyao.cn/meting/?server=:server&type=url&id=:id",
+		],
 	},
 
 	// 本地音乐配置（当 mode 为 'local' 时使用）

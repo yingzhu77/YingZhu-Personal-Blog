@@ -683,6 +683,7 @@ export type MusicPlayerConfig = {
 
 	// Meting API 配置
 	meting?: {
+		audioApis?: string[];
 		// Meting API 地址
 		api?: string;
 

@@ -182,6 +182,50 @@ const managerConfigStr = JSON.stringify({
         throw new Error('All Meting APIs failed');
     }
 
+    function trackUrls(url) {
+        try {
+            var parsed = new URL(url);
+            if (['api.i-meto.com', 'api.injahow.cn', 'api.moeyao.cn'].includes(parsed.hostname) &&
+                parsed.searchParams.get('server') === 'netease' &&
+                parsed.searchParams.get('type') === 'url' &&
+                parsed.searchParams.get('id')) {
+                var id = encodeURIComponent(parsed.searchParams.get('id'));
+                var alternatives = ((config.meting || {}).audioApis || []).map(function (api) {
+                    return api.replace(':server', 'netease').replace(':id', id);
+                });
+                return Array.from(new Set(alternatives.concat(url)));
+            }
+        } catch (e) {
+            // Keep local and unrecognized URLs unchanged.
+        }
+        return [url];
+    }
+
+    var sources = [];
+    var sourceIndex = 0;
+    var playbackRequested = false;
+    var sourceGeneration = 0;
+
+    function startPlayback() {
+        var generation = sourceGeneration;
+        audio.play().then(function () {
+            if (generation !== sourceGeneration) return;
+            state.isPlaying = true;
+            state.error = null;
+            emit('fm:play-state', { isPlaying: true });
+        }).catch(function (error) {
+            if (generation !== sourceGeneration || error.name === 'AbortError') return;
+            if (error.name === 'NotAllowedError') {
+                playbackRequested = false;
+                state.error = '浏览器阻止了播放，请点击播放按钮';
+                emit('fm:error', { message: state.error });
+            } else if (!audio.error) {
+                state.error = '音频无法播放，请尝试其他歌曲或稍后重试';
+                emit('fm:error', { message: state.error });
+            }
+        });
+    }
+
     async function fetchMetingData() {
         if (!config.meting) return;
         var m = config.meting;
@@ -226,19 +270,19 @@ const managerConfigStr = JSON.stringify({
         state.currentIndex = index;
         var track = state.playlist[index];
 
-        audio.src = track.url;
+        playbackRequested = !!autoPlay;
+        sources = trackUrls(track.url);
+        sourceIndex = 0;
+        sourceGeneration++;
+        state.error = null;
+        audio.src = sources[0];
 
         loadLyrics(track);
 
         emit('fm:track', { index: index, track: track, autoPlay: !!autoPlay });
 
         if (autoPlay) {
-            audio.play().then(function () {
-                state.isPlaying = true;
-                emit('fm:play-state', { isPlaying: true });
-            }).catch(function (e) {
-                console.warn('Autoplay blocked:', e);
-            });
+            startPlayback();
         } else {
             state.isPlaying = false;
             emit('fm:play-state', { isPlaying: false });
@@ -248,11 +292,11 @@ const managerConfigStr = JSON.stringify({
     // ── Playback controls ────────────────────────────────────
     function togglePlay() {
         if (audio.paused) {
-            audio.play().then(function () {
-                state.isPlaying = true;
-                emit('fm:play-state', { isPlaying: true });
-            });
+            if (!state.playlist.length) return;
+            playbackRequested = true;
+            startPlayback();
         } else {
+            playbackRequested = false;
             audio.pause();
             state.isPlaying = false;
             emit('fm:play-state', { isPlaying: false });
@@ -262,7 +306,8 @@ const managerConfigStr = JSON.stringify({
     function playNext(auto) {
         if (state.playMode === 1 && auto) {
             audio.currentTime = 0;
-            audio.play();
+            playbackRequested = true;
+            startPlayback();
             return;
         }
         var nextIndex;
@@ -361,7 +406,17 @@ const managerConfigStr = JSON.stringify({
     });
 
     audio.addEventListener('error', function () {
-        state.error = 'Audio playback error';
+        if (sourceIndex + 1 < sources.length) {
+            sourceIndex++;
+            sourceGeneration++;
+            audio.src = sources[sourceIndex];
+            if (playbackRequested) startPlayback();
+            return;
+        }
+        playbackRequested = false;
+        state.isPlaying = false;
+        emit('fm:play-state', { isPlaying: false });
+        state.error = '音频无法播放，请尝试其他歌曲或稍后重试';
         emit('fm:error', { message: state.error });
     });
 
